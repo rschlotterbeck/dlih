@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</title>
+<meta name="author" content="Raoul Schlotterbeck"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/dist/reveal.css"/>
+
+<link rel="stylesheet" href="./css/themes/active.css" id="theme"/>
+<script type="text/javascript" src="/nix/store/ic80bl2rn5c3xjwp92grxszw7xsdv01r-source/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</h1><h2 class="author">Raoul Schlotterbeck</h2><p class="date">Created: 2023-02-24 Fri 10:56</p>
+</section>
+
+<section>
+<section id="slide-1">
+<h2 id="1"><span class="section-number-2">1.</span> Neuronale Netze</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-definition">neuralNet</span> <span class="org-haskell-operator">=</span> layerL <span class="org-haskell-operator">.</span> <span class="org-haskell-operator">...</span> <span class="org-haskell-operator">.</span> layer1
+
+<span class="org-haskell-definition">layer</span> w b <span class="org-haskell-operator">=</span>
+  fmap activationFunction
+  <span class="org-haskell-operator">.</span> vectorAddition b
+  <span class="org-haskell-operator">.</span> matrixVectorProduct w
+</pre>
+</div>
+
+<p>
+=&gt; Komposition purer Funktionen
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-2">
+<h2 id="2"><span class="section-number-2">2.</span> Neuronale Netze</h2>
+<p>
+"&#x2026; Schichten (die im modernen maschinellen Lernen als zustandsbehaftete Funktionen 
+mit impliziten Parametern verstanden werden sollten) werden typischerweise als 
+Python-Klassen dargestellt, deren Konstruktoren ihre Parameter erzeugen und 
+initialisieren&#x2026;"
+</p>
+
+<p>
+"&#x2026; layers (which in modern machine learning should really be understood as 
+stateful functions with implicit parameters) are typically expressed as Python 
+classes whose constructors create and initialize their parameters&#x2026;"
+    <a href="https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf">https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf</a>
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-3">
+<h2 id="3"><span class="section-number-2">3.</span> Training</h2>
+<ul>
+<li>Finde Parameter \((w_i, b_i)\), so dass das NN auf einem gegebenen Trainingsdatensatz
+möglichst gute Ergebnisse liefert</li>
+
+<li><p>
+Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
+</p>
+
+<p>
+=&gt; \(argmin_{\omega \in \Omega} (loss \circ nn (\omega; data))\)
+</p></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-4">
+<h2 id="4"><span class="section-number-2">4.</span> Gradient Descent</h2>
+<p>
+\(w' = w - \alpha * \frac {\partial f}{\partial w}\)
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><img src="./pics/gradient.gif" alt="gradient.gif" /></td>
+<td class="org-left"><img src="./pics/loss_surface.jpg" alt="loss_surface.jpg" /></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+<section>
+<section id="slide-5">
+<h2 id="5"><span class="section-number-2">5.</span> Automatic Differentiation</h2>
+<ul>
+<li><p>
+Ableitung einer Komposition von Funktionen ist Komposition derer Ableitungen
+</p>
+
+<p>
+\(nn = l_L \circ ... \circ l_1\)
+</p>
+
+<p>
+\(Dnn = Dl_L \circ ... \circ Dl_1\)
+</p></li>
+
+<li>Funktionskomposition ist assoziativ, d.h. wir können in bliebiger Reihenfolge
+auswerten</li>
+
+<li>Aufwand vorwärts (rechts-assoziativ) abhängig von Eingangsdimension (= Anzahl der
+Parameter), rückwärts (links-assoziativ) abhängig von Ausgangsdimension (= 1)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-6">
+<h2 id="6"><span class="section-number-2">6.</span> Reverse Automatic Differentiation</h2>
+<p>
+\(Dnn = Dl_L(l_{L-1}(...)) \circ ... \circ Dl1(v)\)
+</p>
+
+<p>
+Um \(Dl_i\) zu berechnen, müssen wir die Ausgabe von \(l_{i - 1}\) kennen
+</p>
+
+<p>
+=&gt; "Wengert-Liste"
+</p>
+
+<p>
+Deep Learning Bibliotheken sind im Wesentlichen Werkzeuge zur Generierung und 
+Verwaltung von Berechnungsgraphen.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-7">
+<h2 id="7"><span class="section-number-2">7.</span> Deep Learning mit TensorFlow</h2>
+
+<div id="org54c0de4" class="figure">
+<p><img src="./pics/tf_graph.png" alt="tf_graph.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-8">
+<h2 id="8"><span class="section-number-2">8.</span> Deep Learning mit TensorFlow</h2>
+<div class="org-src-container">
+
+<pre class="src src-python">
+<span class="org-keyword">class</span> <span class="org-type">SimpleNeuralNetwork</span>:
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(<span class="org-keyword">self</span>, dim):
+        <span class="org-keyword">self</span>.dims = [dim, dim, dim // 2, dim // 2, dim]
+        <span class="org-keyword">self</span>.<span class="org-variable-name">weights</span> = [] 
+        <span class="org-keyword">self</span>.<span class="org-variable-name">biases</span> = []
+        <span class="org-keyword">for</span> i <span class="org-keyword">in</span> <span class="org-builtin">range</span>(4):
+            <span class="org-keyword">self</span>.weights.append(
+                tf.Variable(tf.random.normal(shape=(<span class="org-keyword">self</span>.dims[i+1],<span class="org-keyword">self</span>.dims[i])))
+                )
+            <span class="org-keyword">self</span>.biases.append(
+                tf.Variable(tf.random.normal(shape=(<span class="org-keyword">self</span>.dims[i+1],1)))
+                )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__call__</span>(<span class="org-keyword">self</span>, x):
+        inputs = tf.convert_to_tensor([x], dtype=tf.float32)
+        out = tf.matmul(<span class="org-keyword">self</span>.weights[0], 
+                        inputs, transpose_b=<span class="org-constant">True</span>) + <span class="org-keyword">self</span>.biases[0]
+        out = tf.tanh(out)
+        out = tf.matmul(<span class="org-keyword">self</span>.weights[1], out) + <span class="org-keyword">self</span>.biases[1]
+        out = tf.nn.relu(out)
+        out = tf.matmul(<span class="org-keyword">self</span>.weights[2], out) + <span class="org-keyword">self</span>.biases[2]
+        out = tf.tanh(out)
+
+        <span class="org-keyword">return</span> tf.matmul(<span class="org-keyword">self</span>.weights[3], out) + <span class="org-keyword">self</span>.biases[3]
+
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-9">
+<h2 id="9"><span class="section-number-2">9.</span> Blick hinter die Kulissen?</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-10">
+<h2 id="10"><span class="section-number-2">10.</span> Deep Learning mit TensorFlow</h2>
+<ul>
+<li>Der Code ist sehr unübersichtlich und kompliziert.</li>
+<li>Große Teile des Codes haben gar nichts mit dem eigentlichen Netz zu tun, sondern 
+mit dem TensorFlow-Graphen.</li>
+<li>Der Code ist sehr spezialisiert auf TensorFlow-interne Typen</li>
+<li>Generalisierung und Abstraktion ist in diesem Kontext kaum noch möglich.</li>
+<li>Die einzelnen Teile des Graphen lassen sich überhaupt nicht mehr separat testen</li>
+<li>anfällig für teils kryptische Fehlermeldungen zur Laufzeit</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-11">
+<h2 id="11"><span class="section-number-2">11.</span> Deep Learning mit ConCat</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+(<span class="org-haskell-definition">@.</span>) <span class="org-haskell-operator">::</span> (q s <span class="org-haskell-operator">-&gt;</span> b <span class="org-haskell-operator">-&gt;</span> c) <span class="org-haskell-operator">-&gt;</span> (p s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> b) <span class="org-haskell-operator">-&gt;</span> ((q <span class="org-haskell-type">:*:</span> p) s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> c)
+(g <span class="org-haskell-operator">@.</span> f) (q <span class="org-haskell-constructor">:*:</span> p) <span class="org-haskell-operator">=</span> g q <span class="org-haskell-operator">.</span> f p
+
+<span class="org-haskell-keyword">type</span> <span class="org-haskell-type">SimpleNeuralNetworkPars</span> (f <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Nat</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-operator">*</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-operator">*</span>) n m <span class="org-haskell-operator">=</span>
+  ( (f m <span class="org-haskell-operator">--+</span> f n)
+      <span class="org-haskell-type">:*:</span> (f m <span class="org-haskell-operator">--+</span> f m)
+      <span class="org-haskell-type">:*:</span> (f n <span class="org-haskell-operator">--+</span> f m)
+      <span class="org-haskell-type">:*:</span> (f n <span class="org-haskell-operator">--+</span> f n)
+  )
+
+<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">::</span>
+  (<span class="org-haskell-type">KnownNat</span> n, <span class="org-haskell-type">KnownNat</span> m, <span class="org-haskell-type">Additive</span> numType, <span class="org-haskell-type">Floating</span> numType, <span class="org-haskell-type">Ord</span> numType) <span class="org-haskell-operator">=&gt;</span>
+  <span class="org-haskell-type">SimpleNeuralNetworkPars</span> f n m numType <span class="org-haskell-operator">-&gt;</span> f n numType <span class="org-haskell-operator">-&gt;</span> f n numType
+<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">=</span> affine <span class="org-haskell-operator">@.</span> affTanh <span class="org-haskell-operator">@.</span> affRelu <span class="org-haskell-operator">@.</span> affTanh
+
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-12">
+<h2 id="12"><span class="section-number-2">12.</span> Deep Learning mit ConCat</h2>
+<ul>
+<li>Der Code ist auf die wesentlichen Konzepte reduziert.</li>
+<li>Das Neuronale Netz ist eine pure, ganz normale Haskell-Funktion, die das, und nur 
+das macht, was ein Neuronales Netz so macht.</li>
+<li>Die API für das Neuronale Netz ist demnach einfach Haskell.</li>
+<li>Die Typen sind generisch gehalten.</li>
+<li>Das Neuronale Netz lässt sich leicht testen.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-13">
+<h2 id="13"><span class="section-number-2">13.</span> ConCat</h2>
+
+<div id="org04a8f14" class="figure">
+<p><img src="./pics/concat.png" alt="concat.png" />
+</p>
+</div>
+
+<p>
+&#x2026;
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-14">
+<h2 id="14"><span class="section-number-2">14.</span> ConCat</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+<span class="org-haskell-definition">magSqr</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Num</span> a <span class="org-haskell-operator">=&gt;</span> (a, a) <span class="org-haskell-operator">-&gt;</span> a
+<span class="org-haskell-definition">magSqr</span> (a, b) <span class="org-haskell-operator">=</span> sqr a <span class="org-haskell-operator">+</span> sqr b
+</pre>
+</div>
+
+<p>
+=&gt; ConCat:
+</p>
+
+<p>
+\(magSqr = addC \circ (mulC \circ (exl \triangle exl) \triangle mulC \circ (exr \triangle exr))\)
+</p>
+
+
+<div id="org8a2fee7" class="figure">
+<p><img src="./pics/magSqr.png" alt="magSqr.png" height="300" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-15">
+<h2 id="15"><span class="section-number-2">15.</span> Ableiten mit ConCat</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+<span class="org-haskell-keyword">newtype</span> <span class="org-haskell-type">GD</span> k a b <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">D</span> {unD <span class="org-haskell-operator">::</span> a <span class="org-haskell-operator">-&gt;</span> b <span class="org-haskell-type">:*</span> (a <span class="org-haskell-operator">`k`</span> b)}  
+</pre>
+</div>
+
+<p>
+~ \(a \mapsto (f(a), f’(a))\)
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">Category</span> k <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">Category</span> (<span class="org-haskell-type">GD</span> k) <span class="org-haskell-keyword">where</span> 
+  <span class="org-haskell-operator">...</span>
+  <span class="org-haskell-constructor">D</span> g <span class="org-haskell-operator">.</span> <span class="org-haskell-constructor">D</span> f <span class="org-haskell-operator">=</span> 
+    <span class="org-haskell-constructor">D</span> (<span class="org-haskell-operator">\</span> a <span class="org-haskell-operator">-&gt;</span> 
+          <span class="org-haskell-keyword">let</span> (b, f') <span class="org-haskell-operator">=</span> f a
+              (c, g') <span class="org-haskell-operator">=</span> g b
+           <span class="org-haskell-keyword">in</span> (c, g' <span class="org-haskell-operator">.</span> f')
+      )
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">instance</span> <span class="org-haskell-pragma">{-# overlappable #-}</span> 
+(<span class="org-haskell-type">LinearCat</span> k s, <span class="org-haskell-type">Additive</span> s, <span class="org-haskell-type">Num</span> s) <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">NumCat</span> (<span class="org-haskell-type">GD</span> k) s <span class="org-haskell-keyword">where</span>  
+  <span class="org-haskell-operator">...</span>  
+  mulC    <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">D</span> (mulC <span class="org-haskell-operator">&amp;&amp;&amp;</span> <span class="org-haskell-operator">\</span> (u,v) <span class="org-haskell-operator">-&gt;</span> scale v <span class="org-haskell-operator">||||</span> scale u)
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-16">
+<h2 id="16"><span class="section-number-2">16.</span> Forward Automatic Differentiation mit ConCat</h2>
+
+<div id="org01b315e" class="figure">
+<p><img src="./pics/magSqr_D.png" alt="magSqr_D.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-17">
+<h2 id="17"><span class="section-number-2">17.</span> Reverse Automatic Differentiation mit ConCat</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+<span class="org-haskell-keyword">newtype</span> <span class="org-haskell-type">Dual</span> k a b <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Dual</span> (b <span class="org-haskell-operator">`k`</span> a)
+
+<span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">Category</span> k <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">Category</span> (<span class="org-haskell-type">Dual</span> k) <span class="org-haskell-keyword">where</span>
+  <span class="org-haskell-operator">...</span>
+  (<span class="org-haskell-operator">.</span>) <span class="org-haskell-operator">=</span> inAbst2 (flip (<span class="org-haskell-operator">.</span>))
+
+<span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">CoproductPCat</span> k <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">ProductCat</span> (<span class="org-haskell-type">Dual</span> k) <span class="org-haskell-keyword">where</span>
+  <span class="org-haskell-operator">...</span>
+  exl <span class="org-haskell-operator">=</span> abst inlP
+
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-18">
+<h2 id="18"><span class="section-number-2">18.</span> Reverse Automatic Differentiation mit ConCat</h2>
+
+<div id="orgac4cc0f" class="figure">
+<p><img src="./pics/magSqr_dual.png" alt="magSqr_dual.png" width="500" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-19">
+<h2 id="19"><span class="section-number-2">19.</span> Reverse Automatic Differentiation mit ConCat</h2>
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+<span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Num</span> s <span class="org-haskell-operator">=&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> s) <span class="org-haskell-operator">-&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> a)
+<span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">=</span> friemelOutGrad <span class="org-haskell-operator">.</span> toCcc <span class="org-haskell-operator">@</span><span class="org-haskell-constructor">RAD</span>
+
+<span class="org-haskell-definition">nnGrad</span> <span class="org-haskell-operator">::</span> paramType <span class="org-haskell-operator">-&gt;</span> paramType
+<span class="org-haskell-definition">nnGrad</span> <span class="org-haskell-operator">=</span> grad (loss <span class="org-haskell-operator">.</span> nn)
+
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-20">
+<h2 id="20"><span class="section-number-2">20.</span> TF vs ConCat? (Adam, Parameter, composeRAD, &#x2026;)</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-21">
+<h2 id="21"><span class="section-number-2">21.</span> Beschleunigtes Deep Learning in Haskell</h2>
+<p>
+accelerate &#x2026;</p>
+</section>
+</section>
+</div>
+</div>
+<script src="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/dist/reveal.js"></script>
+<script src="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/plugin/notes/notes.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealNotes ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FIXME</title>
+<meta name="author" content="Foo Bar"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/dist/reveal.css"/>
+
+<link rel="stylesheet" href="./css/themes/active.css" id="theme"/>
+<script type="text/javascript" src="/nix/store/ic80bl2rn5c3xjwp92grxszw7xsdv01r-source/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1 class="title">FIXME</h1><h2 class="author">Foo Bar</h2><p class="date">Created: 2023-02-13 Mon 16:46</p>
+</section>
+
+<section>
+<section id="slide-1">
+<h2 id="1"><span class="section-number-2">1.</span> First slide</h2>
+<p>
+This is an example text.  Now for some Emacs Lisp:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">my-first-function</span> (foo bar)
+  <span class="org-doc">"I'm the documentation."</span>
+  (<span class="org-keyword">let</span> ((this 'that))
+    (<span class="org-keyword">when</span> this
+      (message <span class="org-string">"This"</span>))))
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-2">
+<h2 id="2"><span class="section-number-2">2.</span> A slide with LaTeX</h2>
+<p>
+We can even write fancy math symbols and stuff.  Like
+\(\int_{i=0}^\infty f \mathrm{d}\lambda\).
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-3">
+<h2 id="3"><span class="section-number-2">3.</span> Diagrams!</h2>
+<p>
+Writing PlantUML code to get nice images.
+</p>
+
+
+<div id="org207506d" class="figure">
+<p><img src="plantuml/output/dia.png" alt="dia.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-4">
+<h2 id="4"><span class="section-number-2">4.</span> C4 diagrams</h2>
+<p>
+C4 container diagrams are also possible.
+</p>
+
+
+<div id="org654cadc" class="figure">
+<p><img src="plantuml/output/c4.png" alt="c4.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-5">
+<h2 id="5"><span class="section-number-2">5.</span> Haskell</h2>
+<p>
+As an example for a language where the syntax highlighting doesn't
+work out of the box, here's some Haskell code.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">type</span> <span class="org-haskell-type">Weight</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-type">Integer</span>
+<span class="org-haskell-keyword">type</span> <span class="org-haskell-type">Sentence</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-type">String</span>
+
+<span class="org-doc">-- | Animals may be either dead or alive.</span>
+<span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Liveness</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Alive</span> <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Dead</span>
+
+<span class="org-doc">-- | An animal is one of the following:</span>
+<span class="org-doc">-- - an armadillo -OR-</span>
+<span class="org-doc">-- - a parrot</span>
+<span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Animal</span>
+  <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Dillo</span> { dilloLiveness <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Liveness</span>, dilloWeight <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Weight</span> }
+  <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Parrot</span> <span class="org-haskell-constructor">Sentence</span> <span class="org-haskell-constructor">Weight</span>
+
+<span class="org-haskell-definition">dillo</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Dillo</span> <span class="org-haskell-constructor">Alive</span> 123
+
+<span class="org-haskell-definition">runOverAnimal</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Animal</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Animal</span>
+<span class="org-haskell-definition">runOverAnimal</span> <span class="org-haskell-operator">=</span> undefined
+</pre>
+</div>
+</section>
+</section>
+</div>
+</div>
+<script src="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/dist/reveal.js"></script>
+<script src="/nix/store/9xl8b9acpgqmjwr9r39vcb7bgr0cw3i9-source/plugin/notes/notes.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+overview: true,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealNotes ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

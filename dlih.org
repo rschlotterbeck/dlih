@@ -1,0 +1,241 @@
+#+title: Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell
+#+author: Raoul Schlotterbeck
+#+REVEAL_PLUGINS: (notes)
+#+REVEAL_THEME: ./css/themes/active.css
+#+REVEAL_HLEVEL: 100
+#+REVEAL_TRANS: none
+#+OPTIONS: toc:nil reveal-center:f H:4
+
+* Neuronale Netze
+ 
+#+begin_src haskell
+neuralNet = layerL . ... . layer1
+
+layer w b =
+  fmap activationFunction
+  . vectorAddition b
+  . matrixVectorProduct w
+#+end_src
+
+=> Komposition purer Funktionen
+
+* Neuronale Netze
+
+"... Schichten (die im modernen maschinellen Lernen als zustandsbehaftete Funktionen 
+mit impliziten Parametern verstanden werden sollten) werden typischerweise als 
+Python-Klassen dargestellt, deren Konstruktoren ihre Parameter erzeugen und 
+initialisieren..."
+
+"... layers (which in modern machine learning should really be understood as 
+stateful functions with implicit parameters) are typically expressed as Python 
+classes whose constructors create and initialize their parameters..."
+    https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf
+
+* Training
+
+- Finde Parameter $(w_i, b_i)$, so dass das NN auf einem gegebenen Trainingsdatensatz
+  möglichst gute Ergebnisse liefert
+
+- Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
+
+ => $argmin_{\omega \in \Omega} (loss \circ nn (\omega; data))$
+
+* Gradient Descent
+
+$w' = w - \alpha * \frac {\partial f}{\partial w}$
+
+| [[./pics/gradient.gif]] | [[./pics/loss_surface.jpg]] |
+
+* Automatic Differentiation
+
+- Ableitung einer Komposition von Funktionen ist Komposition derer Ableitungen
+  
+  $nn = l_L \circ ... \circ l_1$
+
+  $Dnn = Dl_L \circ ... \circ Dl_1$
+
+- Funktionskomposition ist assoziativ, d.h. wir können in bliebiger Reihenfolge
+  auswerten
+
+- Aufwand vorwärts (rechts-assoziativ) abhängig von Eingangsdimension (= Anzahl der
+  Parameter), rückwärts (links-assoziativ) abhängig von Ausgangsdimension (= 1)
+
+* Reverse Automatic Differentiation
+
+$Dnn = Dl_L(l_{L-1}(...)) \circ ... \circ Dl1(v)$
+
+Um $Dl_i$ zu berechnen, müssen wir die Ausgabe von $l_{i - 1}$ kennen
+  
+  => "Wengert-Liste"
+
+Deep Learning Bibliotheken sind im Wesentlichen Werkzeuge zur Generierung und 
+Verwaltung von Berechnungsgraphen.
+
+* Deep Learning mit TensorFlow
+
+[[./pics/tf_graph.png]]
+
+* Deep Learning mit TensorFlow
+
+#+begin_src python
+
+class SimpleNeuralNetwork:
+
+    def __init__(self, dim):
+        self.dims = [dim, dim, dim // 2, dim // 2, dim]
+        self.weights = [] 
+        self.biases = []
+        for i in range(4):
+            self.weights.append(
+                tf.Variable(tf.random.normal(shape=(self.dims[i+1],self.dims[i])))
+                )
+            self.biases.append(
+                tf.Variable(tf.random.normal(shape=(self.dims[i+1],1)))
+                )
+    
+    def __call__(self, x):
+        inputs = tf.convert_to_tensor([x], dtype=tf.float32)
+        out = tf.matmul(self.weights[0], 
+                        inputs, transpose_b=True) + self.biases[0]
+        out = tf.tanh(out)
+        out = tf.matmul(self.weights[1], out) + self.biases[1]
+        out = tf.nn.relu(out)
+        out = tf.matmul(self.weights[2], out) + self.biases[2]
+        out = tf.tanh(out)
+        
+        return tf.matmul(self.weights[3], out) + self.biases[3]
+
+#+end_src
+
+* Blick hinter die Kulissen?
+
+* Deep Learning mit TensorFlow
+
+- Der Code ist sehr unübersichtlich und kompliziert.
+- Große Teile des Codes haben gar nichts mit dem eigentlichen Netz zu tun, sondern 
+  mit dem TensorFlow-Graphen.
+- Der Code ist sehr spezialisiert auf TensorFlow-interne Typen
+- Generalisierung und Abstraktion ist in diesem Kontext kaum noch möglich.
+- Die einzelnen Teile des Graphen lassen sich überhaupt nicht mehr separat testen
+- anfällig für teils kryptische Fehlermeldungen zur Laufzeit
+
+* Deep Learning mit ConCat
+
+#+begin_src haskell
+
+(@.) :: (q s -> b -> c) -> (p s -> a -> b) -> ((q :*: p) s -> a -> c)
+(g @. f) (q :*: p) = g q . f p
+
+type SimpleNeuralNetworkPars (f :: Nat -> * -> *) n m =
+  ( (f m --+ f n)
+      :*: (f m --+ f m)
+      :*: (f n --+ f m)
+      :*: (f n --+ f n)
+  )
+
+simpleNeuralNetwork ::
+  (KnownNat n, KnownNat m, Additive numType, Floating numType, Ord numType) =>
+  SimpleNeuralNetworkPars f n m numType -> f n numType -> f n numType
+simpleNeuralNetwork = affine @. affTanh @. affRelu @. affTanh
+
+#+end_src
+
+* Deep Learning mit ConCat
+
+- Der Code ist auf die wesentlichen Konzepte reduziert.
+- Das Neuronale Netz ist eine pure, ganz normale Haskell-Funktion, die das, und nur 
+  das macht, was ein Neuronales Netz so macht.
+- Die API für das Neuronale Netz ist demnach einfach Haskell.
+- Die Typen sind generisch gehalten.
+- Das Neuronale Netz lässt sich leicht testen.
+
+* ConCat
+
+[[./pics/concat.png]]
+
+...
+
+* ConCat
+
+#+begin_src haskell
+
+magSqr :: Num a => (a, a) -> a
+magSqr (a, b) = sqr a + sqr b
+#+end_src
+
+=> ConCat:
+
+$magSqr = addC \circ (mulC \circ (exl \triangle exl) \triangle mulC \circ (exr \triangle exr))$
+
+#+ATTR_HTML: :height 300
+[[./pics/magSqr.png]]
+
+* Ableiten mit ConCat
+
+#+begin_src haskell
+
+newtype GD k a b = D {unD :: a -> b :* (a `k` b)}  
+#+end_src
+
+~ $a \mapsto (f(a), f’(a))$
+
+#+begin_src haskell
+instance Category k => Category (GD k) where 
+  ...
+  D g . D f = 
+    D (\ a -> 
+          let (b, f') = f a
+              (c, g') = g b
+           in (c, g' . f')
+      )
+#+end_src
+
+#+begin_src haskell
+instance {-# overlappable #-} 
+(LinearCat k s, Additive s, Num s) => NumCat (GD k) s where  
+  ...  
+  mulC    = D (mulC &&& \ (u,v) -> scale v |||| scale u)
+#+end_src
+
+* Forward Automatic Differentiation mit ConCat
+
+[[./pics/magSqr_D.png]]
+
+* Reverse Automatic Differentiation mit ConCat
+
+#+begin_src haskell
+
+newtype Dual k a b = Dual (b `k` a)
+
+instance Category k => Category (Dual k) where
+  ...
+  (.) = inAbst2 (flip (.))
+
+instance CoproductPCat k => ProductCat (Dual k) where
+  ...
+  exl = abst inlP
+
+#+end_src
+
+* Reverse Automatic Differentiation mit ConCat
+
+#+ATTR_HTML: :width 500
+[[./pics/magSqr_dual.png]]
+
+* Reverse Automatic Differentiation mit ConCat
+
+#+begin_src haskell
+
+grad :: Num s => (a -> s) -> (a -> a)
+grad = friemelOutGrad . toCcc @RAD
+
+nnGrad :: paramType -> paramType
+nnGrad = grad (loss . nn)
+
+#+end_src
+
+* TF vs ConCat? (Adam, Parameter, composeRAD, ...)
+
+* Beschleunigtes Deep Learning in Haskell
+
+accelerate ...
