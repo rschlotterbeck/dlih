@@ -16,15 +16,21 @@
 <div class="reveal">
 <div class="slides">
 <section id="sec-title-slide">
-<h1 class="title">Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</h1><h2 class="author">Raoul Schlotterbeck</h2><p class="date">Created: 2023-02-24 Fri 10:56</p>
+<h1 class="title">Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</h1><h2 class="author">Raoul Schlotterbeck</h2><p class="date">Created: 2023-03-03 Fri 09:15</p>
 </section>
 
 <section>
 <section id="slide-1">
 <h2 id="1"><span class="section-number-2">1.</span> Neuronale Netze</h2>
+<div style="width: 100%; overflow: hidden;">
+
+<div style="width: 500px; float: left;">
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-definition">neuralNet</span> <span class="org-haskell-operator">=</span> layerL <span class="org-haskell-operator">.</span> <span class="org-haskell-operator">...</span> <span class="org-haskell-operator">.</span> layer1
+<pre class="src src-haskell"><span class="org-haskell-definition">neuralNet</span> wL bL <span class="org-haskell-operator">...</span> w1 b1 <span class="org-haskell-operator">=</span> 
+  layer wL bL 
+  <span class="org-haskell-operator">.</span> <span class="org-haskell-operator">...</span> 
+  <span class="org-haskell-operator">.</span> layer w1 b1
 
 <span class="org-haskell-definition">layer</span> w b <span class="org-haskell-operator">=</span>
   fmap activationFunction
@@ -33,9 +39,31 @@
 </pre>
 </div>
 
+</div>
+
+<div style="margin-left: 500px;">
+
+<div id="orga88be93" class="figure">
+<p><img src="./pics/neural_net.jpg" alt="neural_net.jpg" />
+</p>
+</div>
+</div>
+
+<div style="text-align: center;">
 <p>
 =&gt; Komposition purer Funktionen
 </p>
+</div>
+
+</div>
+
+
+<aside class="notes">
+<p>
+foo
+</p>
+
+</aside>
 
 </section>
 </section>
@@ -43,18 +71,28 @@
 <section id="slide-2">
 <h2 id="2"><span class="section-number-2">2.</span> Neuronale Netze</h2>
 <p>
+<p>
 "&#x2026; Schichten (die im modernen maschinellen Lernen als zustandsbehaftete Funktionen 
 mit impliziten Parametern verstanden werden sollten) werden typischerweise als 
 Python-Klassen dargestellt, deren Konstruktoren ihre Parameter erzeugen und 
 initialisieren&#x2026;"
 </p>
+</p>
 
+<div style="font-size: 60%;">
+<p>
 <p>
 "&#x2026; layers (which in modern machine learning should really be understood as 
 stateful functions with implicit parameters) are typically expressed as Python 
 classes whose constructors create and initialize their parameters&#x2026;"
-    <a href="https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf">https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf</a>
 </p>
+</p>
+<cite style:"font-size=30%">
+<p>
+<a href="https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf">https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf</a>
+</p>
+</cite>
+</div>
 
 </section>
 </section>
@@ -62,7 +100,7 @@ classes whose constructors create and initialize their parameters&#x2026;"
 <section id="slide-3">
 <h2 id="3"><span class="section-number-2">3.</span> Training</h2>
 <ul>
-<li>Finde Parameter \((w_i, b_i)\), so dass das NN auf einem gegebenen Trainingsdatensatz
+<li>Finde Parameter \(\omega_i = (w_i, b_i)\), für die das NN auf einem gegebenen Trainingsdatensatz
 möglichst gute Ergebnisse liefert</li>
 
 <li><p>
@@ -70,8 +108,14 @@ Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
 </p>
 
 <p>
-=&gt; \(argmin_{\omega \in \Omega} (loss \circ nn (\omega; data))\)
-</p></li>
+=&gt; Löse Optimierungsproblem:
+</p>
+
+<div style="text-align: center">
+<p>
+\(\textrm{argmin}_{\omega \in \Omega} (loss \circ nn (\omega; data))\)
+</p>
+</div></li>
 
 </ul>
 
@@ -80,9 +124,11 @@ Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
 <section>
 <section id="slide-4">
 <h2 id="4"><span class="section-number-2">4.</span> Gradient Descent</h2>
+<div style="text-align: center">
 <p>
 \(w' = w - \alpha * \frac {\partial f}{\partial w}\)
 </p>
+</div>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -94,8 +140,8 @@ Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left"><img src="./pics/gradient.gif" alt="gradient.gif" /></td>
-<td class="org-left"><img src="./pics/loss_surface.jpg" alt="loss_surface.jpg" /></td>
+<td class="org-left"><img src="./pics/gradient2.png" alt="gradient2.png" /></td>
+<td class="org-left"><img src="./pics/loss_surface2.png" alt="loss_surface2.png" /></td>
 </tr>
 </tbody>
 </table>
@@ -105,19 +151,17 @@ Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
 <section>
 <section id="slide-5">
 <h2 id="5"><span class="section-number-2">5.</span> Automatic Differentiation</h2>
+<div style="text-align: center">
+<p>
+\(nn = l_L \circ ... \circ l_1\) 
+</p>
+
+<p>
+=&gt; Ableitung ist: \(Dnn = Dl_L \circ ... \circ Dl_1\)
+</p>
+</div>
+
 <ul>
-<li><p>
-Ableitung einer Komposition von Funktionen ist Komposition derer Ableitungen
-</p>
-
-<p>
-\(nn = l_L \circ ... \circ l_1\)
-</p>
-
-<p>
-\(Dnn = Dl_L \circ ... \circ Dl_1\)
-</p></li>
-
 <li>Funktionskomposition ist assoziativ, d.h. wir können in bliebiger Reihenfolge
 auswerten</li>
 
@@ -132,7 +176,7 @@ Parameter), rückwärts (links-assoziativ) abhängig von Ausgangsdimension (= 1)
 <section id="slide-6">
 <h2 id="6"><span class="section-number-2">6.</span> Reverse Automatic Differentiation</h2>
 <p>
-\(Dnn = Dl_L(l_{L-1}(...)) \circ ... \circ Dl1(v)\)
+\(Dnn = Dl_L(l_{L-1}(...)) \circ ... \circ Dl_1(v)\)
 </p>
 
 <p>
@@ -153,9 +197,10 @@ Verwaltung von Berechnungsgraphen.
 <section>
 <section id="slide-7">
 <h2 id="7"><span class="section-number-2">7.</span> Deep Learning mit TensorFlow</h2>
-
-<div id="org54c0de4" class="figure">
-<p><img src="./pics/tf_graph.png" alt="tf_graph.png" />
+<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
+<p>
+<img src="./pics/tf_graph.png" alt="tf_graph.png" />
+<img src="./pics/tensorboard-01.png" alt="tensorboard-01.png" />
 </p>
 </div>
 
@@ -164,6 +209,7 @@ Verwaltung von Berechnungsgraphen.
 <section>
 <section id="slide-8">
 <h2 id="8"><span class="section-number-2">8.</span> Deep Learning mit TensorFlow</h2>
+<div style="font-size: 70%;">
 <div class="org-src-container">
 
 <pre class="src src-python">
@@ -192,42 +238,49 @@ Verwaltung von Berechnungsgraphen.
         out = tf.tanh(out)
 
         <span class="org-keyword">return</span> tf.matmul(<span class="org-keyword">self</span>.weights[3], out) + <span class="org-keyword">self</span>.biases[3]
-
 </pre>
+</div>
 </div>
 
 </section>
 </section>
 <section>
 <section id="slide-9">
-<h2 id="9"><span class="section-number-2">9.</span> Blick hinter die Kulissen?</h2>
-
-</section>
-</section>
-<section>
-<section id="slide-10">
-<h2 id="10"><span class="section-number-2">10.</span> Deep Learning mit TensorFlow</h2>
-<ul>
-<li>Der Code ist sehr unübersichtlich und kompliziert.</li>
-<li>Große Teile des Codes haben gar nichts mit dem eigentlichen Netz zu tun, sondern 
-mit dem TensorFlow-Graphen.</li>
-<li>Der Code ist sehr spezialisiert auf TensorFlow-interne Typen</li>
-<li>Generalisierung und Abstraktion ist in diesem Kontext kaum noch möglich.</li>
-<li>Die einzelnen Teile des Graphen lassen sich überhaupt nicht mehr separat testen</li>
-<li>anfällig für teils kryptische Fehlermeldungen zur Laufzeit</li>
-
-</ul>
-
-</section>
-</section>
-<section>
-<section id="slide-11">
-<h2 id="11"><span class="section-number-2">11.</span> Deep Learning mit ConCat</h2>
+<h2 id="9"><span class="section-number-2">9.</span> Deep Learning mit ConCat</h2>
+<div style="overflow-x: hidden; overflow-y: auto; height: 450px; font-size: 100%">
 <div class="org-src-container">
 
 <pre class="src src-haskell">
-(<span class="org-haskell-definition">@.</span>) <span class="org-haskell-operator">::</span> (q s <span class="org-haskell-operator">-&gt;</span> b <span class="org-haskell-operator">-&gt;</span> c) <span class="org-haskell-operator">-&gt;</span> (p s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> b) <span class="org-haskell-operator">-&gt;</span> ((q <span class="org-haskell-type">:*:</span> p) s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> c)
+<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">::</span>
+  ( <span class="org-haskell-type">KnownNat</span> n, 
+    <span class="org-haskell-type">KnownNat</span> m, 
+    <span class="org-haskell-type">Additive</span> numType, 
+    <span class="org-haskell-type">Floating</span> numType, 
+    <span class="org-haskell-type">Ord</span> numType
+  ) <span class="org-haskell-operator">=&gt;</span>
+  <span class="org-haskell-type">SimpleNeuralNetworkPars</span> f n m numType <span class="org-haskell-operator">-&gt;</span> 
+  f n numType <span class="org-haskell-operator">-&gt;</span> 
+  f n numType
+<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">=</span> 
+  affine 
+  <span class="org-haskell-operator">@.</span> affTanh 
+  <span class="org-haskell-operator">@.</span> affRelu 
+  <span class="org-haskell-operator">@.</span> affTanh
+
+(<span class="org-haskell-definition">@.</span>) <span class="org-haskell-operator">::</span> 
+  (q s <span class="org-haskell-operator">-&gt;</span> b <span class="org-haskell-operator">-&gt;</span> c) <span class="org-haskell-operator">-&gt;</span> 
+  (p s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> b) <span class="org-haskell-operator">-&gt;</span> 
+  ((q <span class="org-haskell-type">:*:</span> p) s <span class="org-haskell-operator">-&gt;</span> a <span class="org-haskell-operator">-&gt;</span> c)
 (g <span class="org-haskell-operator">@.</span> f) (q <span class="org-haskell-constructor">:*:</span> p) <span class="org-haskell-operator">=</span> g q <span class="org-haskell-operator">.</span> f p
+
+<span class="org-haskell-keyword">type</span> p <span class="org-haskell-operator">--*</span> q <span class="org-haskell-operator">=</span> q <span class="org-haskell-type">:.:</span> p
+
+<span class="org-haskell-keyword">type</span> <span class="org-haskell-type">Bump</span> h <span class="org-haskell-operator">=</span> h <span class="org-haskell-type">:*:</span> <span class="org-haskell-type">Par1</span>
+
+<span class="org-haskell-definition">bump</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Num</span> s <span class="org-haskell-operator">=&gt;</span> a s <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Bump</span> a s
+<span class="org-haskell-definition">bump</span> a <span class="org-haskell-operator">=</span> a <span class="org-haskell-constructor">:*:</span> <span class="org-haskell-constructor">Par1</span> 1
+
+<span class="org-haskell-keyword">type</span> a <span class="org-haskell-operator">--+</span> b <span class="org-haskell-operator">=</span> <span class="org-haskell-type">Bump</span> a <span class="org-haskell-operator">--*</span> b
 
 <span class="org-haskell-keyword">type</span> <span class="org-haskell-type">SimpleNeuralNetworkPars</span> (f <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Nat</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-operator">*</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-operator">*</span>) n m <span class="org-haskell-operator">=</span>
   ( (f m <span class="org-haskell-operator">--+</span> f n)
@@ -236,49 +289,55 @@ mit dem TensorFlow-Graphen.</li>
       <span class="org-haskell-type">:*:</span> (f n <span class="org-haskell-operator">--+</span> f n)
   )
 
-<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">::</span>
-  (<span class="org-haskell-type">KnownNat</span> n, <span class="org-haskell-type">KnownNat</span> m, <span class="org-haskell-type">Additive</span> numType, <span class="org-haskell-type">Floating</span> numType, <span class="org-haskell-type">Ord</span> numType) <span class="org-haskell-operator">=&gt;</span>
-  <span class="org-haskell-type">SimpleNeuralNetworkPars</span> f n m numType <span class="org-haskell-operator">-&gt;</span> f n numType <span class="org-haskell-operator">-&gt;</span> f n numType
-<span class="org-haskell-definition">simpleNeuralNetwork</span> <span class="org-haskell-operator">=</span> affine <span class="org-haskell-operator">@.</span> affTanh <span class="org-haskell-operator">@.</span> affRelu <span class="org-haskell-operator">@.</span> affTanh
+(<span class="org-haskell-definition">&lt;.&gt;</span>) <span class="org-haskell-operator">::</span> (<span class="org-haskell-type">Foldable</span> a, <span class="org-haskell-type">Zip</span> a, <span class="org-haskell-type">Additive</span> s, <span class="org-haskell-type">Num</span> s) 
+      <span class="org-haskell-operator">=&gt;</span> a s <span class="org-haskell-operator">-&gt;</span> a s <span class="org-haskell-operator">-&gt;</span> s
+xs <span class="org-haskell-definition">&lt;.&gt;</span> ys <span class="org-haskell-operator">=</span> sumA (zipWith (<span class="org-haskell-operator">*</span>) xs ys)
 
+<span class="org-haskell-definition">linear</span> <span class="org-haskell-operator">::</span> (<span class="org-haskell-type">Foldable</span> a, <span class="org-haskell-type">Zip</span> a, <span class="org-haskell-type">Functor</span> b, <span class="org-haskell-type">Additive</span> s, <span class="org-haskell-type">Num</span> s)
+       <span class="org-haskell-operator">=&gt;</span> (a <span class="org-haskell-operator">--*</span> b) s <span class="org-haskell-operator">-&gt;</span> (a s <span class="org-haskell-operator">-&gt;</span> b s)
+<span class="org-haskell-definition">linear</span> (<span class="org-haskell-constructor">Comp1</span> ba) a <span class="org-haskell-operator">=</span> (<span class="org-haskell-operator">&lt;.&gt;</span> a) <span class="org-haskell-operator">&lt;$&gt;</span> ba
+
+<span class="org-haskell-definition">affine</span> <span class="org-haskell-operator">::</span> (<span class="org-haskell-type">Foldable</span> a, <span class="org-haskell-type">Zip</span> a, <span class="org-haskell-type">Functor</span> b, <span class="org-haskell-type">Additive</span> s, <span class="org-haskell-type">Num</span> s)
+       <span class="org-haskell-operator">=&gt;</span> (a <span class="org-haskell-operator">--+</span> b) s <span class="org-haskell-operator">-&gt;</span> (a s <span class="org-haskell-operator">-&gt;</span> b s)
+<span class="org-haskell-definition">affine</span> m <span class="org-haskell-operator">=</span> linear m <span class="org-haskell-operator">.</span> bump
+
+<span class="org-haskell-definition">affRelu</span> <span class="org-haskell-operator">::</span> 
+  ( <span class="org-haskell-type">Foldable</span> a, 
+    <span class="org-haskell-type">Zip</span> a, 
+    <span class="org-haskell-type">Functor</span> b, 
+    <span class="org-haskell-type">Ord</span> s, 
+    <span class="org-haskell-type">Additive</span> s, 
+    <span class="org-haskell-type">Num</span> s
+  ) <span class="org-haskell-operator">=&gt;</span> 
+  (a <span class="org-haskell-operator">--+</span> b) s <span class="org-haskell-operator">-&gt;</span> (a s <span class="org-haskell-operator">-&gt;</span> b s)
+<span class="org-haskell-definition">affRelu</span> l <span class="org-haskell-operator">=</span> relus <span class="org-haskell-operator">.</span> affine l
 </pre>
+</div>
 </div>
 
 </section>
 </section>
 <section>
-<section id="slide-12">
-<h2 id="12"><span class="section-number-2">12.</span> Deep Learning mit ConCat</h2>
+<section id="slide-10">
+<h2 id="10"><span class="section-number-2">10.</span> ConCat</h2>
+
+<div id="org1eef0eb" class="figure">
+<p><img src="./pics/concat.png" alt="concat.png" />
+</p>
+</div>
+
 <ul>
-<li>Der Code ist auf die wesentlichen Konzepte reduziert.</li>
-<li>Das Neuronale Netz ist eine pure, ganz normale Haskell-Funktion, die das, und nur 
-das macht, was ein Neuronales Netz so macht.</li>
-<li>Die API für das Neuronale Netz ist demnach einfach Haskell.</li>
-<li>Die Typen sind generisch gehalten.</li>
-<li>Das Neuronale Netz lässt sich leicht testen.</li>
+<li>Nutzt Isomorphie zwischen Lambda-Kalkülen und kartesisch abgeschlossenen Kategorien (CCC)</li>
+<li>Übersetzt Haskell-Core in kategorielle Sprache</li>
+<li>Abstrahiert Haskells Funktionspfeil (-&gt;)</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-13">
-<h2 id="13"><span class="section-number-2">13.</span> ConCat</h2>
-
-<div id="org04a8f14" class="figure">
-<p><img src="./pics/concat.png" alt="concat.png" />
-</p>
-</div>
-
-<p>
-&#x2026;
-</p>
-
-</section>
-</section>
-<section>
-<section id="slide-14">
-<h2 id="14"><span class="section-number-2">14.</span> ConCat</h2>
+<section id="slide-11">
+<h2 id="11"><span class="section-number-2">11.</span> ConCat</h2>
 <div class="org-src-container">
 
 <pre class="src src-haskell">
@@ -295,8 +354,11 @@ das macht, was ein Neuronales Netz so macht.</li>
 \(magSqr = addC \circ (mulC \circ (exl \triangle exl) \triangle mulC \circ (exr \triangle exr))\)
 </p>
 
+<p>
+In Kategorie der Graphen ((a, a) `Graph` a):
+</p>
 
-<div id="org8a2fee7" class="figure">
+<div id="orgc5f59d4" class="figure">
 <p><img src="./pics/magSqr.png" alt="magSqr.png" height="300" />
 </p>
 </div>
@@ -304,8 +366,21 @@ das macht, was ein Neuronales Netz so macht.</li>
 </section>
 </section>
 <section>
-<section id="slide-15">
-<h2 id="15"><span class="section-number-2">15.</span> Ableiten mit ConCat</h2>
+<section id="slide-12">
+<h2 id="12"><span class="section-number-2">12.</span> Ableiten mit ConCat</h2>
+<p>
+Idee: ergänze Funktionen um ihre Ableitung
+</p>
+
+<div style="text-align: center;">
+<p>
+\(a \mapsto f(a) \Rightarrow a \mapsto (f(a), f'(a))\)
+</p>
+</div>
+
+<p>
+Kategorie der Generalisierten Ableitungen (Generalized Derivatives):
+</p>
 <div class="org-src-container">
 
 <pre class="src src-haskell">
@@ -313,9 +388,16 @@ das macht, was ein Neuronales Netz so macht.</li>
 </pre>
 </div>
 
+</section>
+</section>
+<section>
+<section id="slide-13">
+<h2 id="13"><span class="section-number-2">13.</span> Ableiten mit ConCat</h2>
+<div style="text-align: center;">
 <p>
-~ \(a \mapsto (f(a), f’(a))\)
+\(a \mapsto (f(a), f'(a))\)
 </p>
+</div>
 
 <div class="org-src-container">
 
@@ -323,18 +405,30 @@ das macht, was ein Neuronales Netz so macht.</li>
   <span class="org-haskell-operator">...</span>
   <span class="org-haskell-constructor">D</span> g <span class="org-haskell-operator">.</span> <span class="org-haskell-constructor">D</span> f <span class="org-haskell-operator">=</span> 
     <span class="org-haskell-constructor">D</span> (<span class="org-haskell-operator">\</span> a <span class="org-haskell-operator">-&gt;</span> 
-          <span class="org-haskell-keyword">let</span> (b, f') <span class="org-haskell-operator">=</span> f a
-              (c, g') <span class="org-haskell-operator">=</span> g b
+          <span class="org-haskell-keyword">let</span> (b, f') <span class="org-haskell-operator">=</span> f a  <span class="org-comment-delimiter">-- </span><span class="org-comment">Kettenregel:</span>
+              (c, g') <span class="org-haskell-operator">=</span> g b  <span class="org-comment-delimiter">-- </span><span class="org-comment">(g o f)'(x) = g'(f(x)) o f'(x)</span>
            <span class="org-haskell-keyword">in</span> (c, g' <span class="org-haskell-operator">.</span> f')
       )
 </pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-14">
+<h2 id="14"><span class="section-number-2">14.</span> Ableiten mit ConCat</h2>
+<div style="text-align: center;">
+<p>
+\(a \mapsto (f(a), f'(a))\)
+</p>
 </div>
 
 <div class="org-src-container">
 
 <pre class="src src-haskell"><span class="org-haskell-keyword">instance</span> <span class="org-haskell-pragma">{-# overlappable #-}</span> 
 (<span class="org-haskell-type">LinearCat</span> k s, <span class="org-haskell-type">Additive</span> s, <span class="org-haskell-type">Num</span> s) <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">NumCat</span> (<span class="org-haskell-type">GD</span> k) s <span class="org-haskell-keyword">where</span>  
-  <span class="org-haskell-operator">...</span>  
+  <span class="org-haskell-operator">...</span>
+  <span class="org-comment-delimiter">-- </span><span class="org-comment">Produktregel: (f(x) * g(x))' = f'(x)*g(x) + f(x)*g'(x)</span>
   mulC    <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">D</span> (mulC <span class="org-haskell-operator">&amp;&amp;&amp;</span> <span class="org-haskell-operator">\</span> (u,v) <span class="org-haskell-operator">-&gt;</span> scale v <span class="org-haskell-operator">||||</span> scale u)
 </pre>
 </div>
@@ -342,13 +436,36 @@ das macht, was ein Neuronales Netz so macht.</li>
 </section>
 </section>
 <section>
-<section id="slide-16">
-<h2 id="16"><span class="section-number-2">16.</span> Forward Automatic Differentiation mit ConCat</h2>
+<section id="slide-15">
+<h2 id="15"><span class="section-number-2">15.</span> Forward Automatic Differentiation mit ConCat</h2>
 
-<div id="org01b315e" class="figure">
+<div id="orgbb04fdb" class="figure">
 <p><img src="./pics/magSqr_D.png" alt="magSqr_D.png" />
 </p>
+<p><span class="figure-number">Figure 1: </span>magSqr in \(GD (-+>)\)</p>
 </div>
+
+</section>
+</section>
+<section>
+<section id="slide-16">
+<h2 id="16"><span class="section-number-2">16.</span> Reverse Automatic Differentiation mit ConCat</h2>
+<p>
+Duale Kategorie ("drehe Pfeile um")
+</p>
+
+<div style="text-align: center">
+<p>
+\(a \rightarrow b \Rightarrow b \rightarrow a\)
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">newtype</span> <span class="org-haskell-type">Dual</span> k a b <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Dual</span> (b <span class="org-haskell-operator">`k`</span> a)
+</pre>
+</div>
+
 
 </section>
 </section>
@@ -358,16 +475,14 @@ das macht, was ein Neuronales Netz so macht.</li>
 <div class="org-src-container">
 
 <pre class="src src-haskell">
-<span class="org-haskell-keyword">newtype</span> <span class="org-haskell-type">Dual</span> k a b <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Dual</span> (b <span class="org-haskell-operator">`k`</span> a)
-
 <span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">Category</span> k <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">Category</span> (<span class="org-haskell-type">Dual</span> k) <span class="org-haskell-keyword">where</span>
   <span class="org-haskell-operator">...</span>
   (<span class="org-haskell-operator">.</span>) <span class="org-haskell-operator">=</span> inAbst2 (flip (<span class="org-haskell-operator">.</span>))
 
 <span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">CoproductPCat</span> k <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">ProductCat</span> (<span class="org-haskell-type">Dual</span> k) <span class="org-haskell-keyword">where</span>
   <span class="org-haskell-operator">...</span>
+  <span class="org-comment-delimiter">-- </span><span class="org-comment">exl :: (a, b) -&gt; a; inlP :: a -&gt; (a, b)</span>
   exl <span class="org-haskell-operator">=</span> abst inlP
-
 </pre>
 </div>
 
@@ -377,9 +492,10 @@ das macht, was ein Neuronales Netz so macht.</li>
 <section id="slide-18">
 <h2 id="18"><span class="section-number-2">18.</span> Reverse Automatic Differentiation mit ConCat</h2>
 
-<div id="orgac4cc0f" class="figure">
+<div id="orgfa5ee9e" class="figure">
 <p><img src="./pics/magSqr_dual.png" alt="magSqr_dual.png" width="500" />
 </p>
+<p><span class="figure-number">Figure 2: </span>magSqr in \(GD (Dual(-+>))\)</p>
 </div>
 
 </section>
@@ -389,13 +505,13 @@ das macht, was ein Neuronales Netz so macht.</li>
 <h2 id="19"><span class="section-number-2">19.</span> Reverse Automatic Differentiation mit ConCat</h2>
 <div class="org-src-container">
 
-<pre class="src src-haskell">
+<pre class="src src-haskell"><span class="org-haskell-keyword">type</span> <span class="org-haskell-type">RAD</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-type">GD</span> (<span class="org-haskell-type">Dual</span> (<span class="org-haskell-operator">-+&gt;</span>))
+
 <span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Num</span> s <span class="org-haskell-operator">=&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> s) <span class="org-haskell-operator">-&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> a)
 <span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">=</span> friemelOutGrad <span class="org-haskell-operator">.</span> toCcc <span class="org-haskell-operator">@</span><span class="org-haskell-constructor">RAD</span>
 
 <span class="org-haskell-definition">nnGrad</span> <span class="org-haskell-operator">::</span> paramType <span class="org-haskell-operator">-&gt;</span> paramType
 <span class="org-haskell-definition">nnGrad</span> <span class="org-haskell-operator">=</span> grad (loss <span class="org-haskell-operator">.</span> nn)
-
 </pre>
 </div>
 
@@ -403,15 +519,454 @@ das macht, was ein Neuronales Netz so macht.</li>
 </section>
 <section>
 <section id="slide-20">
-<h2 id="20"><span class="section-number-2">20.</span> TF vs ConCat? (Adam, Parameter, composeRAD, &#x2026;)</h2>
+<h2 id="20"><span class="section-number-2">20.</span> Adam Optimizer in TensorFlow</h2>
+<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
+<div class="org-src-container">
+
+<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">Optimizer</span>(_BaseOptimizer):
+
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(
+        <span class="org-keyword">self</span>,
+        name,
+        weight_decay=0,
+        clipnorm=<span class="org-constant">None</span>,
+        clipvalue=<span class="org-constant">None</span>,
+        global_clipnorm=<span class="org-constant">None</span>,
+        use_ema=<span class="org-constant">False</span>,
+        ema_momentum=0.99,
+        ema_overwrite_frequency=<span class="org-constant">None</span>,
+        jit_compile=<span class="org-constant">True</span>,
+        **kwargs,
+    ):
+        <span class="org-doc">"""Create a new Optimizer."""</span>
+
+        <span class="org-builtin">super</span>().__init__(
+            name,
+            weight_decay,
+            clipnorm,
+            clipvalue,
+            global_clipnorm,
+            use_ema,
+            ema_momentum,
+            ema_overwrite_frequency,
+            jit_compile,
+            **kwargs,
+        )
+        <span class="org-keyword">self</span>._distribution_strategy = tf.distribute.get_strategy()
+
+    <span class="org-keyword">def</span> <span class="org-function-name">add_variable_from_reference</span>(
+        <span class="org-keyword">self</span>, model_variable, variable_name, shape=<span class="org-constant">None</span>, initial_value=<span class="org-constant">None</span>
+    ):
+        strategy = tf.distribute.get_strategy()
+        <span class="org-keyword">with</span> strategy.extended.colocate_vars_with(model_variable):
+            <span class="org-keyword">return</span> <span class="org-builtin">super</span>().add_variable_from_reference(
+                model_variable, variable_name, shape, initial_value
+            )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_var_key</span>(<span class="org-keyword">self</span>, variable):
+        <span class="org-doc">"""Get a unique identifier of the given variable."""</span>
+
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Get the distributed variable if it exists.</span>
+        <span class="org-comment-delimiter"># </span><span class="org-comment">TODO(b/197554203): replace _distributed_container() with a public api.</span>
+        <span class="org-keyword">if</span> <span class="org-builtin">hasattr</span>(variable, <span class="org-string">"_distributed_container"</span>):
+            variable = variable._distributed_container()
+        <span class="org-keyword">elif</span> (
+            tf_utils.is_extension_type(variable)
+            <span class="org-keyword">and</span> <span class="org-builtin">hasattr</span>(variable, <span class="org-string">"handle"</span>)
+            <span class="org-keyword">and</span> <span class="org-builtin">hasattr</span>(variable.handle, <span class="org-string">"_distributed_container"</span>)
+        ):
+            <span class="org-comment-delimiter"># </span><span class="org-comment">For ResourceVariables, the _distributed_container attribute</span>
+            <span class="org-comment-delimiter"># </span><span class="org-comment">is added to their handle tensors.</span>
+            variable = variable.handle._distributed_container()
+        <span class="org-keyword">return</span> <span class="org-builtin">super</span>()._var_key(variable)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">aggregate_gradients</span>(<span class="org-keyword">self</span>, grads_and_vars):
+        <span class="org-doc">"""Aggregate gradients on all devices.</span>
+<span class="org-doc">        By default we will perform reduce_sum of gradients across devices. Users</span>
+<span class="org-doc">        can implement their own aggregation logic by overriding this method.</span>
+<span class="org-doc">        Args:</span>
+<span class="org-doc">          grads_and_vars: List of (gradient, variable) pairs.</span>
+<span class="org-doc">        Returns:</span>
+<span class="org-doc">          List of (gradient, variable) pairs.</span>
+<span class="org-doc">        """</span>
+        <span class="org-keyword">return</span> optimizer_utils.all_reduce_sum_gradients(grads_and_vars)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">apply_gradients</span>(
+        <span class="org-keyword">self</span>,
+        grads_and_vars,
+        name=<span class="org-constant">None</span>,
+        skip_gradients_aggregation=<span class="org-constant">False</span>,
+        **kwargs,
+    ):
+        <span class="org-doc">"""Apply gradients to variables.</span>
+<span class="org-doc">        Args:</span>
+<span class="org-doc">          grads_and_vars: List of `(gradient, variable)` pairs.</span>
+<span class="org-doc">          name: string, defaults to None. The name of the namescope to</span>
+<span class="org-doc">            use when creating variables. If None, `self.name` will be used.</span>
+<span class="org-doc">          skip_gradients_aggregation: If true, gradients aggregation will not be</span>
+<span class="org-doc">            performed inside optimizer. Usually this arg is set to True when you</span>
+<span class="org-doc">            write custom code aggregating gradients outside the optimizer.</span>
+<span class="org-doc">          **kwargs: keyword arguments only used for backward compatibility.</span>
+<span class="org-doc">        Returns:</span>
+<span class="org-doc">          A `tf.Variable`, representing the current iteration.</span>
+<span class="org-doc">        Raises:</span>
+<span class="org-doc">          TypeError: If `grads_and_vars` is malformed.</span>
+<span class="org-doc">          RuntimeError: If called in a cross-replica context.</span>
+<span class="org-doc">        """</span>
+        <span class="org-comment-delimiter"># </span><span class="org-comment">`experimental_aggregate_gradients` is an arg in `apply_gradients` of</span>
+        <span class="org-comment-delimiter"># </span><span class="org-comment">v2 optimizer -- the reverse of `skip_gradients_aggregation`.</span>
+        <span class="org-comment-delimiter"># </span><span class="org-comment">We read it from kwargs for backward compatibility.</span>
+        experimental_aggregate_gradients = kwargs.pop(
+            <span class="org-string">"experimental_aggregate_gradients"</span>, <span class="org-constant">True</span>
+        )
+        <span class="org-keyword">if</span> <span class="org-keyword">not</span> skip_gradients_aggregation <span class="org-keyword">and</span> experimental_aggregate_gradients:
+            grads_and_vars = <span class="org-keyword">self</span>.aggregate_gradients(grads_and_vars)
+        <span class="org-keyword">return</span> <span class="org-builtin">super</span>().apply_gradients(grads_and_vars, name=name)
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_apply_weight_decay</span>(<span class="org-keyword">self</span>, variables):
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Apply weight decay in distributed setup.</span>
+        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.weight_decay <span class="org-keyword">is</span> <span class="org-constant">None</span>:
+            <span class="org-keyword">return</span>
+
+        <span class="org-keyword">def</span> <span class="org-function-name">distributed_apply_weight_decay</span>(distribution, variables, **kwargs):
+            <span class="org-keyword">def</span> <span class="org-function-name">weight_decay_fn</span>(variable):
+                <span class="org-keyword">if</span> <span class="org-keyword">self</span>._use_weight_decay(variable):
+                    lr = tf.cast(<span class="org-keyword">self</span>.learning_rate, variable.dtype)
+                    wd = tf.cast(<span class="org-keyword">self</span>.weight_decay, variable.dtype)
+                    variable.assign_sub(variable * wd * lr)
+
+            <span class="org-keyword">for</span> variable <span class="org-keyword">in</span> variables:
+                distribution.extended.update(
+                    variable, weight_decay_fn, group=<span class="org-constant">False</span>
+                )
+
+        tf.__internal__.distribute.interim.maybe_merge_call(
+            distributed_apply_weight_decay,
+            <span class="org-keyword">self</span>._distribution_strategy,
+            variables,
+        )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_internal_apply_gradients</span>(<span class="org-keyword">self</span>, grads_and_vars):
+        <span class="org-keyword">return</span> tf.__internal__.distribute.interim.maybe_merge_call(
+            <span class="org-keyword">self</span>._distributed_apply_gradients_fn,
+            <span class="org-keyword">self</span>._distribution_strategy,
+            grads_and_vars,
+        )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_overwrite_model_variables_with_average_value_helper</span>(<span class="org-keyword">self</span>, var_list):
+        <span class="org-doc">"""Helper function to _overwrite_model_variables_with_average_value.</span>
+<span class="org-doc">        This function overwrites variables on each device.</span>
+<span class="org-doc">        Args:</span>
+<span class="org-doc">          var_list: list of model variables.</span>
+<span class="org-doc">        """</span>
+        strategy = <span class="org-keyword">self</span>._distribution_strategy
+        <span class="org-comment-delimiter"># </span><span class="org-comment">Override model variable by the stored average value on all devices.</span>
+        <span class="org-keyword">for</span> var, average_var <span class="org-keyword">in</span> <span class="org-builtin">zip</span>(
+            var_list, <span class="org-keyword">self</span>._model_variables_moving_average
+        ):
+            strategy.extended.update(
+                var, <span class="org-keyword">lambda</span> a, b: a.assign(b), args=(average_var,)
+            )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_update_model_variables_moving_average</span>(<span class="org-keyword">self</span>, var_list):
+        <span class="org-doc">"""Update the stored moving average using the latest value."""</span>
+        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.use_ema:
+
+            <span class="org-keyword">def</span> <span class="org-function-name">update_average</span>(average, var):
+                average.assign(
+                    <span class="org-keyword">self</span>.ema_momentum * average + (1 - <span class="org-keyword">self</span>.ema_momentum) * var
+                )
+
+            <span class="org-keyword">for</span> var, average <span class="org-keyword">in</span> <span class="org-builtin">zip</span>(
+                var_list, <span class="org-keyword">self</span>._model_variables_moving_average
+            ):
+                <span class="org-keyword">self</span>._distribution_strategy.extended.update(
+                    average, update_average, args=(var,), group=<span class="org-constant">False</span>
+                )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">_distributed_apply_gradients_fn</span>(
+        <span class="org-keyword">self</span>, distribution, grads_and_vars, **kwargs
+    ):
+        <span class="org-doc">"""`apply_gradients` using a `DistributionStrategy`."""</span>
+
+        <span class="org-keyword">def</span> <span class="org-function-name">apply_grad_to_update_var</span>(var, grad):
+            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.jit_compile:
+                <span class="org-keyword">return</span> <span class="org-keyword">self</span>._update_step_xla(grad, var, <span class="org-builtin">id</span>(<span class="org-keyword">self</span>._var_key(var)))
+            <span class="org-keyword">else</span>:
+                <span class="org-keyword">return</span> <span class="org-keyword">self</span>._update_step(grad, var)
+
+        <span class="org-keyword">for</span> grad, var <span class="org-keyword">in</span> grads_and_vars:
+            distribution.extended.update(
+                var, apply_grad_to_update_var, args=(grad,), group=<span class="org-constant">False</span>
+            )
+
+        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.use_ema:
+            _, var_list = <span class="org-builtin">zip</span>(*grads_and_vars)
+            <span class="org-keyword">self</span>._update_model_variables_moving_average(var_list)
+            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.ema_overwrite_frequency:
+                <span class="org-comment-delimiter"># </span><span class="org-comment">Only when self.ema_overwrite_frequency is not None, we</span>
+                <span class="org-comment-delimiter"># </span><span class="org-comment">overwrite the model variables.</span>
+                should_overwrite_model_vars = (
+                    <span class="org-keyword">self</span>.iterations + 1
+                ) % <span class="org-keyword">self</span>.ema_overwrite_frequency == 0
+                tf.cond(
+                    tf.cast(should_overwrite_model_vars, tf.<span class="org-builtin">bool</span>),
+                    true_fn=<span class="org-keyword">lambda</span>: <span class="org-keyword">self</span>._overwrite_model_variables_with_average_value(  <span class="org-comment-delimiter"># </span><span class="org-comment">noqa: E501</span>
+                        var_list
+                    ),
+                    false_fn=<span class="org-keyword">lambda</span>: <span class="org-constant">None</span>,
+                )
+        <span class="org-keyword">return</span> <span class="org-keyword">self</span>.iterations.assign_add(1)
+
+<span class="org-keyword">class</span> <span class="org-type">Adam</span>(optimizer.Optimizer):
+    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(
+        <span class="org-keyword">self</span>,
+        learning_rate=0.001,
+        beta_1=0.9,
+        beta_2=0.999,
+        epsilon=1e-7,
+        amsgrad=<span class="org-constant">False</span>,
+        weight_decay=<span class="org-constant">None</span>,
+        clipnorm=<span class="org-constant">None</span>,
+        clipvalue=<span class="org-constant">None</span>,
+        global_clipnorm=<span class="org-constant">None</span>,
+        use_ema=<span class="org-constant">False</span>,
+        ema_momentum=0.99,
+        ema_overwrite_frequency=<span class="org-constant">None</span>,
+        jit_compile=<span class="org-constant">True</span>,
+        name=<span class="org-string">"Adam"</span>,
+        **kwargs
+    ):
+        <span class="org-builtin">super</span>().__init__(
+            name=name,
+            weight_decay=weight_decay,
+            clipnorm=clipnorm,
+            clipvalue=clipvalue,
+            global_clipnorm=global_clipnorm,
+            use_ema=use_ema,
+            ema_momentum=ema_momentum,
+            ema_overwrite_frequency=ema_overwrite_frequency,
+            jit_compile=jit_compile,
+            **kwargs
+        )
+        <span class="org-keyword">self</span>._learning_rate = <span class="org-keyword">self</span>._build_learning_rate(learning_rate)
+        <span class="org-keyword">self</span>.beta_1 = beta_1
+        <span class="org-keyword">self</span>.beta_2 = beta_2
+        <span class="org-keyword">self</span>.epsilon = epsilon
+        <span class="org-keyword">self</span>.amsgrad = amsgrad
+
+    <span class="org-keyword">def</span> <span class="org-function-name">build</span>(<span class="org-keyword">self</span>, var_list):
+        <span class="org-doc">"""Initialize optimizer variables.</span>
+<span class="org-doc">        Adam optimizer has 3 types of variables: momentums, velocities and</span>
+<span class="org-doc">        velocity_hat (only set when amsgrad is applied),</span>
+<span class="org-doc">        Args:</span>
+<span class="org-doc">          var_list: list of model variables to build Adam variables on.</span>
+<span class="org-doc">        """</span>
+        <span class="org-builtin">super</span>().build(var_list)
+        <span class="org-keyword">if</span> <span class="org-builtin">hasattr</span>(<span class="org-keyword">self</span>, <span class="org-string">"_built"</span>) <span class="org-keyword">and</span> <span class="org-keyword">self</span>._built:
+            <span class="org-keyword">return</span>
+        <span class="org-keyword">self</span>._built = <span class="org-constant">True</span>
+        <span class="org-keyword">self</span>._momentums = []
+        <span class="org-keyword">self</span>._velocities = []
+        <span class="org-keyword">for</span> var <span class="org-keyword">in</span> var_list:
+            <span class="org-keyword">self</span>._momentums.append(
+                <span class="org-keyword">self</span>.add_variable_from_reference(
+                    model_variable=var, variable_name=<span class="org-string">"m"</span>
+                )
+            )
+            <span class="org-keyword">self</span>._velocities.append(
+                <span class="org-keyword">self</span>.add_variable_from_reference(
+                    model_variable=var, variable_name=<span class="org-string">"v"</span>
+                )
+            )
+        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
+            <span class="org-keyword">self</span>._velocity_hats = []
+            <span class="org-keyword">for</span> var <span class="org-keyword">in</span> var_list:
+                <span class="org-keyword">self</span>._velocity_hats.append(
+                    <span class="org-keyword">self</span>.add_variable_from_reference(
+                        model_variable=var, variable_name=<span class="org-string">"vhat"</span>
+                    )
+                )
+
+    <span class="org-keyword">def</span> <span class="org-function-name">update_step</span>(<span class="org-keyword">self</span>, gradient, variable):
+        <span class="org-doc">"""Update step given gradient and the associated model variable."""</span>
+        beta_1_power = <span class="org-constant">None</span>
+        beta_2_power = <span class="org-constant">None</span>
+        lr = tf.cast(<span class="org-keyword">self</span>.learning_rate, variable.dtype)
+        local_step = tf.cast(<span class="org-keyword">self</span>.iterations + 1, variable.dtype)
+        beta_1_power = tf.<span class="org-builtin">pow</span>(tf.cast(<span class="org-keyword">self</span>.beta_1, variable.dtype), local_step)
+        beta_2_power = tf.<span class="org-builtin">pow</span>(tf.cast(<span class="org-keyword">self</span>.beta_2, variable.dtype), local_step)
+
+        var_key = <span class="org-keyword">self</span>._var_key(variable)
+        m = <span class="org-keyword">self</span>._momentums[<span class="org-keyword">self</span>._index_dict[var_key]]
+        v = <span class="org-keyword">self</span>._velocities[<span class="org-keyword">self</span>._index_dict[var_key]]
+
+        alpha = lr * tf.sqrt(1 - beta_2_power) / (1 - beta_1_power)
+
+        <span class="org-keyword">if</span> <span class="org-builtin">isinstance</span>(gradient, tf.IndexedSlices):
+            <span class="org-comment-delimiter"># </span><span class="org-comment">Sparse gradients.</span>
+            m.assign_add(-m * (1 - <span class="org-keyword">self</span>.beta_1))
+            m.scatter_add(
+                tf.IndexedSlices(
+                    gradient.values * (1 - <span class="org-keyword">self</span>.beta_1), gradient.indices
+                )
+            )
+            v.assign_add(-v * (1 - <span class="org-keyword">self</span>.beta_2))
+            v.scatter_add(
+                tf.IndexedSlices(
+                    tf.square(gradient.values) * (1 - <span class="org-keyword">self</span>.beta_2),
+                    gradient.indices,
+                )
+            )
+            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
+                v_hat = <span class="org-keyword">self</span>._velocity_hats[<span class="org-keyword">self</span>._index_dict[var_key]]
+                v_hat.assign(tf.maximum(v_hat, v))
+                v = v_hat
+            variable.assign_sub((m * alpha) / (tf.sqrt(v) + <span class="org-keyword">self</span>.epsilon))
+        <span class="org-keyword">else</span>:
+            <span class="org-comment-delimiter"># </span><span class="org-comment">Dense gradients.</span>
+            m.assign_add((gradient - m) * (1 - <span class="org-keyword">self</span>.beta_1))
+            v.assign_add((tf.square(gradient) - v) * (1 - <span class="org-keyword">self</span>.beta_2))
+            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
+                v_hat = <span class="org-keyword">self</span>._velocity_hats[<span class="org-keyword">self</span>._index_dict[var_key]]
+                v_hat.assign(tf.maximum(v_hat, v))
+                v = v_hat
+            variable.assign_sub((m * alpha) / (tf.sqrt(v) + <span class="org-keyword">self</span>.epsilon))
+
+    <span class="org-keyword">def</span> <span class="org-function-name">get_config</span>(<span class="org-keyword">self</span>):
+        config = <span class="org-builtin">super</span>().get_config()
+
+        config.update(
+            {
+                <span class="org-string">"learning_rate"</span>: <span class="org-keyword">self</span>._serialize_hyperparameter(
+                    <span class="org-keyword">self</span>._learning_rate
+                ),
+                <span class="org-string">"beta_1"</span>: <span class="org-keyword">self</span>.beta_1,
+                <span class="org-string">"beta_2"</span>: <span class="org-keyword">self</span>.beta_2,
+                <span class="org-string">"epsilon"</span>: <span class="org-keyword">self</span>.epsilon,
+                <span class="org-string">"amsgrad"</span>: <span class="org-keyword">self</span>.amsgrad,
+            }
+        )
+        <span class="org-keyword">return</span> config
+</pre>
+</div>
+</div>
 
 </section>
 </section>
 <section>
 <section id="slide-21">
-<h2 id="21"><span class="section-number-2">21.</span> Beschleunigtes Deep Learning in Haskell</h2>
+<h2 id="21"><span class="section-number-2">21.</span> Adam Optimizer mit ConCat</h2>
+<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
+<div class="org-src-container">
+
+<pre class="src src-haskell">
+<span class="org-haskell-definition">adamStep</span> <span class="org-haskell-operator">::</span>
+  <span class="org-haskell-keyword">forall</span> numType paramStructure<span class="org-haskell-operator">.</span>
+  ( <span class="org-haskell-type">Functor</span> paramStructure
+  , <span class="org-haskell-type">Zip.Zip</span> paramStructure
+  , <span class="org-haskell-type">Additive1</span> paramStructure
+  , <span class="org-haskell-type">Additive</span> numType
+  , <span class="org-haskell-type">Num</span> numType
+  , <span class="org-haskell-type">Fractional</span> numType
+  , <span class="org-haskell-type">Floating</span> numType
+  , <span class="org-haskell-type">Additive</span> (paramStructure numType)
+  ) <span class="org-haskell-operator">=&gt;</span>
+  <span class="org-haskell-type">AdamParameters</span> numType <span class="org-haskell-operator">-&gt;</span>
+  (paramStructure numType <span class="org-haskell-operator">-&gt;</span> paramStructure numType) <span class="org-haskell-operator">-&gt;</span>
+  <span class="org-haskell-type">Unop</span> (<span class="org-haskell-type">AdamState</span> (paramStructure numType))
+<span class="org-haskell-definition">adamStep</span>
+  (beta1, beta2, epsilon, alpha)
+  calcGrad
+  (params, fstMEstimate, sndMEstimate, stepCount) <span class="org-haskell-operator">=</span>
+    (params', fstMEstimate', sndMEstimate', stepCount')
+    <span class="org-haskell-keyword">where</span>
+      stepCount' <span class="org-haskell-operator">=</span> stepCount <span class="org-haskell-operator">+</span> 1
+      stepCount'' <span class="org-haskell-operator">=</span> fromIntegral stepCount'
+      grad <span class="org-haskell-operator">=</span> calcGrad params
+      fstMEstimate' <span class="org-haskell-operator">=</span>
+        beta1 <span class="org-haskell-operator">*^</span> fstMEstimate <span class="org-haskell-operator">^+^</span> (1 <span class="org-haskell-operator">-</span> beta1) <span class="org-haskell-operator">*^</span> grad
+          <span class="org-haskell-operator">&lt;+</span> additive1 <span class="org-haskell-operator">@</span>paramStructure <span class="org-haskell-operator">@</span>numType
+      sndMEstimate' <span class="org-haskell-operator">=</span>
+        beta2 <span class="org-haskell-operator">*^</span> sndMEstimate
+          <span class="org-haskell-operator">^+^</span> (1 <span class="org-haskell-operator">-</span> beta2) <span class="org-haskell-operator">*^</span> Zip.zipWith (<span class="org-haskell-operator">*</span>) grad grad
+          <span class="org-haskell-operator">&lt;+</span> additive1 <span class="org-haskell-operator">@</span>paramStructure <span class="org-haskell-operator">@</span>numType
+      fstMEstimateHat <span class="org-haskell-operator">=</span> fstMEstimate' <span class="org-haskell-operator">^/</span> (1 <span class="org-haskell-operator">-</span> beta1 <span class="org-haskell-operator">**</span> stepCount'')
+      sndMEstimateHat <span class="org-haskell-operator">=</span> sndMEstimate' <span class="org-haskell-operator">^/</span> (1 <span class="org-haskell-operator">-</span> beta2 <span class="org-haskell-operator">**</span> stepCount'')
+      sqrSndMEstimateHat <span class="org-haskell-operator">=</span> sqrt <span class="org-haskell-operator">&lt;$&gt;</span> sndMEstimateHat
+      effectiveGradient <span class="org-haskell-operator">=</span>
+        Zip.zipWith (<span class="org-haskell-operator">/</span>) fstMEstimateHat ((<span class="org-haskell-operator">+</span> epsilon) <span class="org-haskell-operator">&lt;$&gt;</span> sqrSndMEstimateHat)
+      params' <span class="org-haskell-operator">=</span> params <span class="org-haskell-operator">^-^</span> alpha <span class="org-haskell-operator">*^</span> effectiveGradient
+</pre>
+</div>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-22">
+<h2 id="22"><span class="section-number-2">22.</span> Beschleunigtes Deep Learning in Haskell</h2>
 <p>
-accelerate &#x2026;</p>
+"Data.Array.Accelerate defines an embedded array language for computations for 
+high-performance computing in Haskell. &#x2026; These computations may then be online 
+compiled and executed on a range of architectures."
+</p>
+
+<p>
+Kategorie der Accelerate-Funktionen:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">newtype</span> <span class="org-haskell-type">AccFun</span> a b <span class="org-haskell-keyword">where</span>
+  <span class="org-haskell-constructor">AccFun</span> <span class="org-haskell-operator">::</span> (<span class="org-haskell-type">AccValue</span> a <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">AccValue</span> b) <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">AccFun</span> a b
+</pre>
+</div>
+
+<aside class="notes">
+<p>
+(- native Haskell accelerate:-&gt; AST)
+</p>
+<ul>
+<li>schreiben Berechnung als Haskell-Code, daraus entsteht accelerate AST</li>
+<li>accelerate AST wird zur Laufzeit von LLVM kompiliert</li>
+<li>kann dann gegen CPU/GPU/&#x2026; ausgeführt werden</li>
+<li>Plugin erzeugt den acclerate AST</li>
+
+</ul>
+
+</aside>
+
+</section>
+</section>
+<section>
+<section id="slide-23">
+<h2 id="23"><span class="section-number-2">23.</span> Beschleunigtes Deep Learning in Haskell</h2>
+<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 79%">
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-definition">autoencoder</span> <span class="org-haskell-operator">::</span>
+  <span class="org-haskell-keyword">forall</span> m n<span class="org-haskell-operator">.</span>
+  (<span class="org-haskell-type">KnownNat</span> m, <span class="org-haskell-type">KnownNat</span> n) <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">Autoencoder</span> m n <span class="org-haskell-type">Double</span>
+<span class="org-haskell-definition">autoencoder</span> <span class="org-haskell-operator">=</span>
+  affine <span class="org-haskell-operator">@</span>(<span class="org-haskell-constructor">Vector</span> n) <span class="org-haskell-operator">@.</span> affTanh <span class="org-haskell-operator">@</span>(<span class="org-haskell-constructor">Vector</span> n) <span class="org-haskell-operator">@.</span> affRelu <span class="org-haskell-operator">@</span>(<span class="org-haskell-constructor">Vector</span> m) <span class="org-haskell-operator">@.</span> affTanh
+
+<span class="org-haskell-definition">autoencoderGrad</span> <span class="org-haskell-operator">::</span>
+  <span class="org-haskell-keyword">forall</span> m n<span class="org-haskell-operator">.</span>
+  ( <span class="org-haskell-type">KnownNat</span> m, <span class="org-haskell-type">KnownNat</span> n) <span class="org-haskell-operator">=&gt;</span>
+  (<span class="org-haskell-type">Vector</span> m <span class="org-haskell-type">Double</span>, <span class="org-haskell-type">Vector</span> m <span class="org-haskell-type">Double</span>) <span class="org-haskell-operator">-&gt;</span>
+  <span class="org-haskell-type">AutoencoderPars</span> m n <span class="org-haskell-type">Double</span> <span class="org-haskell-operator">-&gt;</span>
+  <span class="org-haskell-type">AutoencoderPars</span> m n <span class="org-haskell-type">Double</span>
+<span class="org-haskell-definition">autoencoderGrad</span> <span class="org-haskell-operator">=</span> errGrad autoencoder
+
+<span class="org-haskell-definition">autoencoderGradAccFun</span> <span class="org-haskell-operator">::</span>
+  <span class="org-haskell-keyword">forall</span> m n<span class="org-haskell-operator">.</span>
+  ( <span class="org-haskell-type">KnownNat</span> m, <span class="org-haskell-type">KnownNat</span> n) <span class="org-haskell-operator">=&gt;</span>
+  (<span class="org-haskell-type">Vector</span> m <span class="org-haskell-type">Double</span>, <span class="org-haskell-type">Vector</span> m <span class="org-haskell-type">Double</span>) <span class="org-haskell-operator">-&gt;</span>
+  <span class="org-haskell-type">AutoencoderPars</span> m n <span class="org-haskell-type">Double</span> <span class="org-haskell-operator">`AccFun`</span> <span class="org-haskell-type">AutoencoderPars</span> m n <span class="org-haskell-type">Double</span>
+<span class="org-haskell-definition">autoencoderGradAccFun</span> pair <span class="org-haskell-operator">=</span> AltCat.toCcc' (autoencoderGrad pair)
+</pre>
+</div>
+</div>
 </section>
 </section>
 </div>
