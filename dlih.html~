@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</title>
+<title>Ist das ein Graph oder kann das weg? \\ Funktionales Deep Learning in Haskell</title>
 <meta name="author" content="Raoul Schlotterbeck"/>
 <style type="text/css">
 .underline { text-decoration: underline; }
@@ -16,7 +16,7 @@
 <div class="reveal">
 <div class="slides">
 <section id="sec-title-slide">
-<h1 class="title">Ist das ein Graph oder kann das weg? Funktionales Deep Learning in Haskell</h1><h2 class="author">Raoul Schlotterbeck</h2><p class="date">Created: 2023-03-03 Fri 09:06</p>
+<h1 class="title">Ist das ein Graph oder kann das weg? \\ Funktionales Deep Learning in Haskell</h1><h2 class="author">Raoul Schlotterbeck</h2><p class="date">Created: 2023-03-03 Fri 09:19</p>
 </section>
 
 <section>
@@ -43,7 +43,7 @@
 
 <div style="margin-left: 500px;">
 
-<div id="org2359a1a" class="figure">
+<div id="org8ba2744" class="figure">
 <p><img src="./pics/neural_net.jpg" alt="neural_net.jpg" />
 </p>
 </div>
@@ -321,7 +321,7 @@ xs <span class="org-haskell-definition">&lt;.&gt;</span> ys <span class="org-has
 <section id="slide-10">
 <h2 id="10"><span class="section-number-2">10.</span> ConCat</h2>
 
-<div id="org3e28b4e" class="figure">
+<div id="orga29695b" class="figure">
 <p><img src="./pics/concat.png" alt="concat.png" />
 </p>
 </div>
@@ -358,7 +358,7 @@ xs <span class="org-haskell-definition">&lt;.&gt;</span> ys <span class="org-has
 In Kategorie der Graphen ((a, a) `Graph` a):
 </p>
 
-<div id="orge49bb29" class="figure">
+<div id="org7ce381f" class="figure">
 <p><img src="./pics/magSqr.png" alt="magSqr.png" height="300" />
 </p>
 </div>
@@ -439,10 +439,10 @@ Kategorie der Generalisierten Ableitungen (Generalized Derivatives):
 <section id="slide-15">
 <h2 id="15"><span class="section-number-2">15.</span> Forward Automatic Differentiation mit ConCat</h2>
 
-<div id="org1ccd127" class="figure">
+<div id="org7f98496" class="figure">
 <p><img src="./pics/magSqr_D.png" alt="magSqr_D.png" />
 </p>
-<p><span class="figure-number">Figure 1: </span>magSqr in \(D (-+>)\)</p>
+<p><span class="figure-number">Figure 1: </span>magSqr in \(GD (-+>)\)</p>
 </div>
 
 </section>
@@ -492,10 +492,10 @@ Duale Kategorie ("drehe Pfeile um")
 <section id="slide-18">
 <h2 id="18"><span class="section-number-2">18.</span> Reverse Automatic Differentiation mit ConCat</h2>
 
-<div id="orgaef69ee" class="figure">
+<div id="orgc3ed60b" class="figure">
 <p><img src="./pics/magSqr_dual.png" alt="magSqr_dual.png" width="500" />
 </p>
-<p><span class="figure-number">Figure 2: </span>magSqr in \(D (Dual(-+>))\)</p>
+<p><span class="figure-number">Figure 2: </span>magSqr in \(GD (Dual(-+>))\)</p>
 </div>
 
 </section>
@@ -505,7 +505,8 @@ Duale Kategorie ("drehe Pfeile um")
 <h2 id="19"><span class="section-number-2">19.</span> Reverse Automatic Differentiation mit ConCat</h2>
 <div class="org-src-container">
 
-<pre class="src src-haskell">
+<pre class="src src-haskell"><span class="org-haskell-keyword">type</span> <span class="org-haskell-type">RAD</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-type">GD</span> (<span class="org-haskell-type">Dual</span> (<span class="org-haskell-operator">-+&gt;</span>))
+
 <span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Num</span> s <span class="org-haskell-operator">=&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> s) <span class="org-haskell-operator">-&gt;</span> (a <span class="org-haskell-operator">-&gt;</span> a)
 <span class="org-haskell-definition">grad</span> <span class="org-haskell-operator">=</span> friemelOutGrad <span class="org-haskell-operator">.</span> toCcc <span class="org-haskell-operator">@</span><span class="org-haskell-constructor">RAD</span>
 
@@ -518,393 +519,7 @@ Duale Kategorie ("drehe Pfeile um")
 </section>
 <section>
 <section id="slide-20">
-<h2 id="20"><span class="section-number-2">20.</span> Adam Optimizer in TensorFlow</h2>
-<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
-<div class="org-src-container">
-
-<pre class="src src-python"><span class="org-keyword">class</span> <span class="org-type">Optimizer</span>(_BaseOptimizer):
-
-    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(
-        <span class="org-keyword">self</span>,
-        name,
-        weight_decay=0,
-        clipnorm=<span class="org-constant">None</span>,
-        clipvalue=<span class="org-constant">None</span>,
-        global_clipnorm=<span class="org-constant">None</span>,
-        use_ema=<span class="org-constant">False</span>,
-        ema_momentum=0.99,
-        ema_overwrite_frequency=<span class="org-constant">None</span>,
-        jit_compile=<span class="org-constant">True</span>,
-        **kwargs,
-    ):
-        <span class="org-doc">"""Create a new Optimizer."""</span>
-
-        <span class="org-builtin">super</span>().__init__(
-            name,
-            weight_decay,
-            clipnorm,
-            clipvalue,
-            global_clipnorm,
-            use_ema,
-            ema_momentum,
-            ema_overwrite_frequency,
-            jit_compile,
-            **kwargs,
-        )
-        <span class="org-keyword">self</span>._distribution_strategy = tf.distribute.get_strategy()
-
-    <span class="org-keyword">def</span> <span class="org-function-name">add_variable_from_reference</span>(
-        <span class="org-keyword">self</span>, model_variable, variable_name, shape=<span class="org-constant">None</span>, initial_value=<span class="org-constant">None</span>
-    ):
-        strategy = tf.distribute.get_strategy()
-        <span class="org-keyword">with</span> strategy.extended.colocate_vars_with(model_variable):
-            <span class="org-keyword">return</span> <span class="org-builtin">super</span>().add_variable_from_reference(
-                model_variable, variable_name, shape, initial_value
-            )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_var_key</span>(<span class="org-keyword">self</span>, variable):
-        <span class="org-doc">"""Get a unique identifier of the given variable."""</span>
-
-        <span class="org-comment-delimiter"># </span><span class="org-comment">Get the distributed variable if it exists.</span>
-        <span class="org-comment-delimiter"># </span><span class="org-comment">TODO(b/197554203): replace _distributed_container() with a public api.</span>
-        <span class="org-keyword">if</span> <span class="org-builtin">hasattr</span>(variable, <span class="org-string">"_distributed_container"</span>):
-            variable = variable._distributed_container()
-        <span class="org-keyword">elif</span> (
-            tf_utils.is_extension_type(variable)
-            <span class="org-keyword">and</span> <span class="org-builtin">hasattr</span>(variable, <span class="org-string">"handle"</span>)
-            <span class="org-keyword">and</span> <span class="org-builtin">hasattr</span>(variable.handle, <span class="org-string">"_distributed_container"</span>)
-        ):
-            <span class="org-comment-delimiter"># </span><span class="org-comment">For ResourceVariables, the _distributed_container attribute</span>
-            <span class="org-comment-delimiter"># </span><span class="org-comment">is added to their handle tensors.</span>
-            variable = variable.handle._distributed_container()
-        <span class="org-keyword">return</span> <span class="org-builtin">super</span>()._var_key(variable)
-
-    <span class="org-keyword">def</span> <span class="org-function-name">aggregate_gradients</span>(<span class="org-keyword">self</span>, grads_and_vars):
-        <span class="org-doc">"""Aggregate gradients on all devices.</span>
-<span class="org-doc">        By default we will perform reduce_sum of gradients across devices. Users</span>
-<span class="org-doc">        can implement their own aggregation logic by overriding this method.</span>
-<span class="org-doc">        Args:</span>
-<span class="org-doc">          grads_and_vars: List of (gradient, variable) pairs.</span>
-<span class="org-doc">        Returns:</span>
-<span class="org-doc">          List of (gradient, variable) pairs.</span>
-<span class="org-doc">        """</span>
-        <span class="org-keyword">return</span> optimizer_utils.all_reduce_sum_gradients(grads_and_vars)
-
-    <span class="org-keyword">def</span> <span class="org-function-name">apply_gradients</span>(
-        <span class="org-keyword">self</span>,
-        grads_and_vars,
-        name=<span class="org-constant">None</span>,
-        skip_gradients_aggregation=<span class="org-constant">False</span>,
-        **kwargs,
-    ):
-        <span class="org-doc">"""Apply gradients to variables.</span>
-<span class="org-doc">        Args:</span>
-<span class="org-doc">          grads_and_vars: List of `(gradient, variable)` pairs.</span>
-<span class="org-doc">          name: string, defaults to None. The name of the namescope to</span>
-<span class="org-doc">            use when creating variables. If None, `self.name` will be used.</span>
-<span class="org-doc">          skip_gradients_aggregation: If true, gradients aggregation will not be</span>
-<span class="org-doc">            performed inside optimizer. Usually this arg is set to True when you</span>
-<span class="org-doc">            write custom code aggregating gradients outside the optimizer.</span>
-<span class="org-doc">          **kwargs: keyword arguments only used for backward compatibility.</span>
-<span class="org-doc">        Returns:</span>
-<span class="org-doc">          A `tf.Variable`, representing the current iteration.</span>
-<span class="org-doc">        Raises:</span>
-<span class="org-doc">          TypeError: If `grads_and_vars` is malformed.</span>
-<span class="org-doc">          RuntimeError: If called in a cross-replica context.</span>
-<span class="org-doc">        """</span>
-        <span class="org-comment-delimiter"># </span><span class="org-comment">`experimental_aggregate_gradients` is an arg in `apply_gradients` of</span>
-        <span class="org-comment-delimiter"># </span><span class="org-comment">v2 optimizer -- the reverse of `skip_gradients_aggregation`.</span>
-        <span class="org-comment-delimiter"># </span><span class="org-comment">We read it from kwargs for backward compatibility.</span>
-        experimental_aggregate_gradients = kwargs.pop(
-            <span class="org-string">"experimental_aggregate_gradients"</span>, <span class="org-constant">True</span>
-        )
-        <span class="org-keyword">if</span> <span class="org-keyword">not</span> skip_gradients_aggregation <span class="org-keyword">and</span> experimental_aggregate_gradients:
-            grads_and_vars = <span class="org-keyword">self</span>.aggregate_gradients(grads_and_vars)
-        <span class="org-keyword">return</span> <span class="org-builtin">super</span>().apply_gradients(grads_and_vars, name=name)
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_apply_weight_decay</span>(<span class="org-keyword">self</span>, variables):
-        <span class="org-comment-delimiter"># </span><span class="org-comment">Apply weight decay in distributed setup.</span>
-        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.weight_decay <span class="org-keyword">is</span> <span class="org-constant">None</span>:
-            <span class="org-keyword">return</span>
-
-        <span class="org-keyword">def</span> <span class="org-function-name">distributed_apply_weight_decay</span>(distribution, variables, **kwargs):
-            <span class="org-keyword">def</span> <span class="org-function-name">weight_decay_fn</span>(variable):
-                <span class="org-keyword">if</span> <span class="org-keyword">self</span>._use_weight_decay(variable):
-                    lr = tf.cast(<span class="org-keyword">self</span>.learning_rate, variable.dtype)
-                    wd = tf.cast(<span class="org-keyword">self</span>.weight_decay, variable.dtype)
-                    variable.assign_sub(variable * wd * lr)
-
-            <span class="org-keyword">for</span> variable <span class="org-keyword">in</span> variables:
-                distribution.extended.update(
-                    variable, weight_decay_fn, group=<span class="org-constant">False</span>
-                )
-
-        tf.__internal__.distribute.interim.maybe_merge_call(
-            distributed_apply_weight_decay,
-            <span class="org-keyword">self</span>._distribution_strategy,
-            variables,
-        )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_internal_apply_gradients</span>(<span class="org-keyword">self</span>, grads_and_vars):
-        <span class="org-keyword">return</span> tf.__internal__.distribute.interim.maybe_merge_call(
-            <span class="org-keyword">self</span>._distributed_apply_gradients_fn,
-            <span class="org-keyword">self</span>._distribution_strategy,
-            grads_and_vars,
-        )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_overwrite_model_variables_with_average_value_helper</span>(<span class="org-keyword">self</span>, var_list):
-        <span class="org-doc">"""Helper function to _overwrite_model_variables_with_average_value.</span>
-<span class="org-doc">        This function overwrites variables on each device.</span>
-<span class="org-doc">        Args:</span>
-<span class="org-doc">          var_list: list of model variables.</span>
-<span class="org-doc">        """</span>
-        strategy = <span class="org-keyword">self</span>._distribution_strategy
-        <span class="org-comment-delimiter"># </span><span class="org-comment">Override model variable by the stored average value on all devices.</span>
-        <span class="org-keyword">for</span> var, average_var <span class="org-keyword">in</span> <span class="org-builtin">zip</span>(
-            var_list, <span class="org-keyword">self</span>._model_variables_moving_average
-        ):
-            strategy.extended.update(
-                var, <span class="org-keyword">lambda</span> a, b: a.assign(b), args=(average_var,)
-            )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_update_model_variables_moving_average</span>(<span class="org-keyword">self</span>, var_list):
-        <span class="org-doc">"""Update the stored moving average using the latest value."""</span>
-        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.use_ema:
-
-            <span class="org-keyword">def</span> <span class="org-function-name">update_average</span>(average, var):
-                average.assign(
-                    <span class="org-keyword">self</span>.ema_momentum * average + (1 - <span class="org-keyword">self</span>.ema_momentum) * var
-                )
-
-            <span class="org-keyword">for</span> var, average <span class="org-keyword">in</span> <span class="org-builtin">zip</span>(
-                var_list, <span class="org-keyword">self</span>._model_variables_moving_average
-            ):
-                <span class="org-keyword">self</span>._distribution_strategy.extended.update(
-                    average, update_average, args=(var,), group=<span class="org-constant">False</span>
-                )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">_distributed_apply_gradients_fn</span>(
-        <span class="org-keyword">self</span>, distribution, grads_and_vars, **kwargs
-    ):
-        <span class="org-doc">"""`apply_gradients` using a `DistributionStrategy`."""</span>
-
-        <span class="org-keyword">def</span> <span class="org-function-name">apply_grad_to_update_var</span>(var, grad):
-            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.jit_compile:
-                <span class="org-keyword">return</span> <span class="org-keyword">self</span>._update_step_xla(grad, var, <span class="org-builtin">id</span>(<span class="org-keyword">self</span>._var_key(var)))
-            <span class="org-keyword">else</span>:
-                <span class="org-keyword">return</span> <span class="org-keyword">self</span>._update_step(grad, var)
-
-        <span class="org-keyword">for</span> grad, var <span class="org-keyword">in</span> grads_and_vars:
-            distribution.extended.update(
-                var, apply_grad_to_update_var, args=(grad,), group=<span class="org-constant">False</span>
-            )
-
-        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.use_ema:
-            _, var_list = <span class="org-builtin">zip</span>(*grads_and_vars)
-            <span class="org-keyword">self</span>._update_model_variables_moving_average(var_list)
-            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.ema_overwrite_frequency:
-                <span class="org-comment-delimiter"># </span><span class="org-comment">Only when self.ema_overwrite_frequency is not None, we</span>
-                <span class="org-comment-delimiter"># </span><span class="org-comment">overwrite the model variables.</span>
-                should_overwrite_model_vars = (
-                    <span class="org-keyword">self</span>.iterations + 1
-                ) % <span class="org-keyword">self</span>.ema_overwrite_frequency == 0
-                tf.cond(
-                    tf.cast(should_overwrite_model_vars, tf.<span class="org-builtin">bool</span>),
-                    true_fn=<span class="org-keyword">lambda</span>: <span class="org-keyword">self</span>._overwrite_model_variables_with_average_value(  <span class="org-comment-delimiter"># </span><span class="org-comment">noqa: E501</span>
-                        var_list
-                    ),
-                    false_fn=<span class="org-keyword">lambda</span>: <span class="org-constant">None</span>,
-                )
-        <span class="org-keyword">return</span> <span class="org-keyword">self</span>.iterations.assign_add(1)
-
-<span class="org-keyword">class</span> <span class="org-type">Adam</span>(optimizer.Optimizer):
-    <span class="org-keyword">def</span> <span class="org-function-name">__init__</span>(
-        <span class="org-keyword">self</span>,
-        learning_rate=0.001,
-        beta_1=0.9,
-        beta_2=0.999,
-        epsilon=1e-7,
-        amsgrad=<span class="org-constant">False</span>,
-        weight_decay=<span class="org-constant">None</span>,
-        clipnorm=<span class="org-constant">None</span>,
-        clipvalue=<span class="org-constant">None</span>,
-        global_clipnorm=<span class="org-constant">None</span>,
-        use_ema=<span class="org-constant">False</span>,
-        ema_momentum=0.99,
-        ema_overwrite_frequency=<span class="org-constant">None</span>,
-        jit_compile=<span class="org-constant">True</span>,
-        name=<span class="org-string">"Adam"</span>,
-        **kwargs
-    ):
-        <span class="org-builtin">super</span>().__init__(
-            name=name,
-            weight_decay=weight_decay,
-            clipnorm=clipnorm,
-            clipvalue=clipvalue,
-            global_clipnorm=global_clipnorm,
-            use_ema=use_ema,
-            ema_momentum=ema_momentum,
-            ema_overwrite_frequency=ema_overwrite_frequency,
-            jit_compile=jit_compile,
-            **kwargs
-        )
-        <span class="org-keyword">self</span>._learning_rate = <span class="org-keyword">self</span>._build_learning_rate(learning_rate)
-        <span class="org-keyword">self</span>.beta_1 = beta_1
-        <span class="org-keyword">self</span>.beta_2 = beta_2
-        <span class="org-keyword">self</span>.epsilon = epsilon
-        <span class="org-keyword">self</span>.amsgrad = amsgrad
-
-    <span class="org-keyword">def</span> <span class="org-function-name">build</span>(<span class="org-keyword">self</span>, var_list):
-        <span class="org-doc">"""Initialize optimizer variables.</span>
-<span class="org-doc">        Adam optimizer has 3 types of variables: momentums, velocities and</span>
-<span class="org-doc">        velocity_hat (only set when amsgrad is applied),</span>
-<span class="org-doc">        Args:</span>
-<span class="org-doc">          var_list: list of model variables to build Adam variables on.</span>
-<span class="org-doc">        """</span>
-        <span class="org-builtin">super</span>().build(var_list)
-        <span class="org-keyword">if</span> <span class="org-builtin">hasattr</span>(<span class="org-keyword">self</span>, <span class="org-string">"_built"</span>) <span class="org-keyword">and</span> <span class="org-keyword">self</span>._built:
-            <span class="org-keyword">return</span>
-        <span class="org-keyword">self</span>._built = <span class="org-constant">True</span>
-        <span class="org-keyword">self</span>._momentums = []
-        <span class="org-keyword">self</span>._velocities = []
-        <span class="org-keyword">for</span> var <span class="org-keyword">in</span> var_list:
-            <span class="org-keyword">self</span>._momentums.append(
-                <span class="org-keyword">self</span>.add_variable_from_reference(
-                    model_variable=var, variable_name=<span class="org-string">"m"</span>
-                )
-            )
-            <span class="org-keyword">self</span>._velocities.append(
-                <span class="org-keyword">self</span>.add_variable_from_reference(
-                    model_variable=var, variable_name=<span class="org-string">"v"</span>
-                )
-            )
-        <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
-            <span class="org-keyword">self</span>._velocity_hats = []
-            <span class="org-keyword">for</span> var <span class="org-keyword">in</span> var_list:
-                <span class="org-keyword">self</span>._velocity_hats.append(
-                    <span class="org-keyword">self</span>.add_variable_from_reference(
-                        model_variable=var, variable_name=<span class="org-string">"vhat"</span>
-                    )
-                )
-
-    <span class="org-keyword">def</span> <span class="org-function-name">update_step</span>(<span class="org-keyword">self</span>, gradient, variable):
-        <span class="org-doc">"""Update step given gradient and the associated model variable."""</span>
-        beta_1_power = <span class="org-constant">None</span>
-        beta_2_power = <span class="org-constant">None</span>
-        lr = tf.cast(<span class="org-keyword">self</span>.learning_rate, variable.dtype)
-        local_step = tf.cast(<span class="org-keyword">self</span>.iterations + 1, variable.dtype)
-        beta_1_power = tf.<span class="org-builtin">pow</span>(tf.cast(<span class="org-keyword">self</span>.beta_1, variable.dtype), local_step)
-        beta_2_power = tf.<span class="org-builtin">pow</span>(tf.cast(<span class="org-keyword">self</span>.beta_2, variable.dtype), local_step)
-
-        var_key = <span class="org-keyword">self</span>._var_key(variable)
-        m = <span class="org-keyword">self</span>._momentums[<span class="org-keyword">self</span>._index_dict[var_key]]
-        v = <span class="org-keyword">self</span>._velocities[<span class="org-keyword">self</span>._index_dict[var_key]]
-
-        alpha = lr * tf.sqrt(1 - beta_2_power) / (1 - beta_1_power)
-
-        <span class="org-keyword">if</span> <span class="org-builtin">isinstance</span>(gradient, tf.IndexedSlices):
-            <span class="org-comment-delimiter"># </span><span class="org-comment">Sparse gradients.</span>
-            m.assign_add(-m * (1 - <span class="org-keyword">self</span>.beta_1))
-            m.scatter_add(
-                tf.IndexedSlices(
-                    gradient.values * (1 - <span class="org-keyword">self</span>.beta_1), gradient.indices
-                )
-            )
-            v.assign_add(-v * (1 - <span class="org-keyword">self</span>.beta_2))
-            v.scatter_add(
-                tf.IndexedSlices(
-                    tf.square(gradient.values) * (1 - <span class="org-keyword">self</span>.beta_2),
-                    gradient.indices,
-                )
-            )
-            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
-                v_hat = <span class="org-keyword">self</span>._velocity_hats[<span class="org-keyword">self</span>._index_dict[var_key]]
-                v_hat.assign(tf.maximum(v_hat, v))
-                v = v_hat
-            variable.assign_sub((m * alpha) / (tf.sqrt(v) + <span class="org-keyword">self</span>.epsilon))
-        <span class="org-keyword">else</span>:
-            <span class="org-comment-delimiter"># </span><span class="org-comment">Dense gradients.</span>
-            m.assign_add((gradient - m) * (1 - <span class="org-keyword">self</span>.beta_1))
-            v.assign_add((tf.square(gradient) - v) * (1 - <span class="org-keyword">self</span>.beta_2))
-            <span class="org-keyword">if</span> <span class="org-keyword">self</span>.amsgrad:
-                v_hat = <span class="org-keyword">self</span>._velocity_hats[<span class="org-keyword">self</span>._index_dict[var_key]]
-                v_hat.assign(tf.maximum(v_hat, v))
-                v = v_hat
-            variable.assign_sub((m * alpha) / (tf.sqrt(v) + <span class="org-keyword">self</span>.epsilon))
-
-    <span class="org-keyword">def</span> <span class="org-function-name">get_config</span>(<span class="org-keyword">self</span>):
-        config = <span class="org-builtin">super</span>().get_config()
-
-        config.update(
-            {
-                <span class="org-string">"learning_rate"</span>: <span class="org-keyword">self</span>._serialize_hyperparameter(
-                    <span class="org-keyword">self</span>._learning_rate
-                ),
-                <span class="org-string">"beta_1"</span>: <span class="org-keyword">self</span>.beta_1,
-                <span class="org-string">"beta_2"</span>: <span class="org-keyword">self</span>.beta_2,
-                <span class="org-string">"epsilon"</span>: <span class="org-keyword">self</span>.epsilon,
-                <span class="org-string">"amsgrad"</span>: <span class="org-keyword">self</span>.amsgrad,
-            }
-        )
-        <span class="org-keyword">return</span> config
-</pre>
-</div>
-</div>
-
-</section>
-</section>
-<section>
-<section id="slide-21">
-<h2 id="21"><span class="section-number-2">21.</span> Adam Optimizer mit ConCat</h2>
-<div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
-<div class="org-src-container">
-
-<pre class="src src-haskell">
-<span class="org-haskell-definition">adamStep</span> <span class="org-haskell-operator">::</span>
-  <span class="org-haskell-keyword">forall</span> numType paramStructure<span class="org-haskell-operator">.</span>
-  ( <span class="org-haskell-type">Functor</span> paramStructure
-  , <span class="org-haskell-type">Zip.Zip</span> paramStructure
-  , <span class="org-haskell-type">Additive1</span> paramStructure
-  , <span class="org-haskell-type">Additive</span> numType
-  , <span class="org-haskell-type">Num</span> numType
-  , <span class="org-haskell-type">Fractional</span> numType
-  , <span class="org-haskell-type">Floating</span> numType
-  , <span class="org-haskell-type">Additive</span> (paramStructure numType)
-  ) <span class="org-haskell-operator">=&gt;</span>
-  <span class="org-haskell-type">AdamParameters</span> numType <span class="org-haskell-operator">-&gt;</span>
-  (paramStructure numType <span class="org-haskell-operator">-&gt;</span> paramStructure numType) <span class="org-haskell-operator">-&gt;</span>
-  <span class="org-haskell-type">Unop</span> (<span class="org-haskell-type">AdamState</span> (paramStructure numType))
-<span class="org-haskell-definition">adamStep</span>
-  (beta1, beta2, epsilon, alpha)
-  calcGrad
-  (params, fstMEstimate, sndMEstimate, stepCount) <span class="org-haskell-operator">=</span>
-    (params', fstMEstimate', sndMEstimate', stepCount')
-    <span class="org-haskell-keyword">where</span>
-      stepCount' <span class="org-haskell-operator">=</span> stepCount <span class="org-haskell-operator">+</span> 1
-      stepCount'' <span class="org-haskell-operator">=</span> fromIntegral stepCount'
-      grad <span class="org-haskell-operator">=</span> calcGrad params
-      fstMEstimate' <span class="org-haskell-operator">=</span>
-        beta1 <span class="org-haskell-operator">*^</span> fstMEstimate <span class="org-haskell-operator">^+^</span> (1 <span class="org-haskell-operator">-</span> beta1) <span class="org-haskell-operator">*^</span> grad
-          <span class="org-haskell-operator">&lt;+</span> additive1 <span class="org-haskell-operator">@</span>paramStructure <span class="org-haskell-operator">@</span>numType
-      sndMEstimate' <span class="org-haskell-operator">=</span>
-        beta2 <span class="org-haskell-operator">*^</span> sndMEstimate
-          <span class="org-haskell-operator">^+^</span> (1 <span class="org-haskell-operator">-</span> beta2) <span class="org-haskell-operator">*^</span> Zip.zipWith (<span class="org-haskell-operator">*</span>) grad grad
-          <span class="org-haskell-operator">&lt;+</span> additive1 <span class="org-haskell-operator">@</span>paramStructure <span class="org-haskell-operator">@</span>numType
-      fstMEstimateHat <span class="org-haskell-operator">=</span> fstMEstimate' <span class="org-haskell-operator">^/</span> (1 <span class="org-haskell-operator">-</span> beta1 <span class="org-haskell-operator">**</span> stepCount'')
-      sndMEstimateHat <span class="org-haskell-operator">=</span> sndMEstimate' <span class="org-haskell-operator">^/</span> (1 <span class="org-haskell-operator">-</span> beta2 <span class="org-haskell-operator">**</span> stepCount'')
-      sqrSndMEstimateHat <span class="org-haskell-operator">=</span> sqrt <span class="org-haskell-operator">&lt;$&gt;</span> sndMEstimateHat
-      effectiveGradient <span class="org-haskell-operator">=</span>
-        Zip.zipWith (<span class="org-haskell-operator">/</span>) fstMEstimateHat ((<span class="org-haskell-operator">+</span> epsilon) <span class="org-haskell-operator">&lt;$&gt;</span> sqrSndMEstimateHat)
-      params' <span class="org-haskell-operator">=</span> params <span class="org-haskell-operator">^-^</span> alpha <span class="org-haskell-operator">*^</span> effectiveGradient
-</pre>
-</div>
-</div>
-
-</section>
-</section>
-<section>
-<section id="slide-22">
-<h2 id="22"><span class="section-number-2">22.</span> Beschleunigtes Deep Learning in Haskell</h2>
+<h2 id="20"><span class="section-number-2">20.</span> Beschleunigtes Deep Learning in Haskell</h2>
 <p>
 "Data.Array.Accelerate defines an embedded array language for computations for 
 high-performance computing in Haskell. &#x2026; These computations may then be online 
@@ -938,8 +553,8 @@ Kategorie der Accelerate-Funktionen:
 </section>
 </section>
 <section>
-<section id="slide-23">
-<h2 id="23"><span class="section-number-2">23.</span> Beschleunigtes Deep Learning in Haskell</h2>
+<section id="slide-21">
+<h2 id="21"><span class="section-number-2">21.</span> Beschleunigtes Deep Learning in Haskell</h2>
 <div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 79%">
 <div class="org-src-container">
 
