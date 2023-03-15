@@ -4,124 +4,133 @@
 #+REVEAL_THEME: ./css/themes/active.css
 #+REVEAL_HLEVEL: 100
 #+REVEAL_TRANS: none
-#+OPTIONS: toc:nil reveal-center:f H:4
+#+OPTIONS: toc:nil reveal-center:f H:4 num:nil
+#+MACRO: inline-hs src_haskell[:exports code]{$1}
 
-* Neuronale Netze
+* Compiling to Categories
 
-#+REVEAL_HTML: <div style="width: 100%; overflow: hidden;">
+#+REVEAL_HTML: <div style="font-size: 80%"><p>
+"/As so often, I find that talks that I'm giving are basically explaining what Conal 
+Elliot and Ed Kmett have done several years ago./"
+#+REVEAL_HTML: </p><figcaption style="font-size: 80%"> - Simon Peyton Jones </figcaption></div><img src="./pics/compiling_to_categories.png" style="height: 400px">
 
-#+REVEAL_HTML: <div style="width: 500px; float: left;">
+* Siemens Anomaly App
+
+#+REVEAL_HTML: <img style="border: 1px solid black" src="./pics/sap_small.png"> 
+
+* Neuronale Netze sind doch nur Funktionen
+
+#+REVEAL_HTML: <div style="width: 100%; overflow: hidden;"> <div style="width: 550px; float: left; font-size: 90%">
 #+begin_src haskell
 neuralNet wL bL ... w1 b1 = 
   layer wL bL 
   . ... 
   . layer w1 b1
 
-layer w b =
+layer weightMatrix biasVector =
   fmap activationFunction
-  . vectorAddition b
-  . matrixVectorProduct w
+  . vectorAddition biasVector
+  . matrixVectorProduct weightMatrix
 #+end_src
 
-#+REVEAL_HTML: </div>
-
-#+REVEAL_HTML: <div style="margin-left: 500px;">
-[[./pics/neural_net.jpg]]
-#+REVEAL_HTML: </div>
-
-#+REVEAL_HTML: <div style="text-align: center;">
-=> Komposition purer Funktionen
-#+REVEAL_HTML: </div>
-
-#+REVEAL_HTML: </div>
+#+REVEAL_HTML: </div><div style="margin-left: 550px;">
+[[./pics/neural_net.png]]
+#+REVEAL_HTML: </div><div style="text-align: center;">
+$\Rightarrow$ Komposition purer Funktionen
+#+REVEAL_HTML: </div></div>
 
 
 #+begin_notes
-foo
+- Gibt auch andere layers
 #+end_notes
 
-* Neuronale Netze
+* Deep Learning Community: Hold my beer
 
 #+REVEAL_HTML: <p>
-"... Schichten (die im modernen maschinellen Lernen als zustandsbehaftete Funktionen 
-mit impliziten Parametern verstanden werden sollten) werden typischerweise als 
-Python-Klassen dargestellt, deren Konstruktoren ihre Parameter erzeugen und 
-initialisieren..."
+"... layers (die im modernen maschinellen Lernen als *zustandsbehaftete* Funktionen 
+mit *impliziten Parametern* verstanden werden sollten) werden typischerweise als 
+*Python-Klassen* dargestellt, deren Konstruktoren ihre Parameter *erzeugen und 
+initialisieren*..."
 #+REVEAL_HTML: </p>
 
-#+REVEAL_HTML: <div style="font-size: 60%;">
-#+REVEAL_HTML: <p>
-"... layers (which in modern machine learning should really be understood as 
-stateful functions with implicit parameters) are typically expressed as Python 
-classes whose constructors create and initialize their parameters..."
-#+REVEAL_HTML: </p>
-#+REVEAL_HTML: <cite style:"font-size=30%">
+#+REVEAL_HTML: <cite style="font-size: 50%">
+Übersetzt aus:
 https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf
 #+REVEAL_HTML: </cite>
-#+REVEAL_HTML: </div>
 
 * Training
 
-- Finde Parameter $\omega_i = (w_i, b_i)$, für die das NN auf einem gegebenen Trainingsdatensatz
+- Finde Parameter, für die das NN auf einem gegebenen Trainingsdatensatz
   möglichst gute Ergebnisse liefert
 
-- Was gut ist, wird von einer (skalarwertigen) Fehlerfunktion beurteilt
+- Was gut ist, wird von einer skalarwertigen Fehlerfunktion beurteilt
 
- => Löse Optimierungsproblem:
+ $\Rightarrow$ Löse Optimierungsproblem:
  
  #+REVEAL_HTML: <div style="text-align: center">
- $\textrm{argmin}_{\omega \in \Omega} (loss \circ nn (\omega; data))$
+ $\textrm{argmin}_{\omega \in \Omega} (\textrm{loss} \circ \textrm{neuralNet} (\omega; \textrm{data}))$
  #+REVEAL_HTML: </div>
 
 * Gradient Descent
 
-#+REVEAL_HTML: <div style="text-align: center">
-$w' = w - \alpha * \frac {\partial f}{\partial w}$
-#+REVEAL_HTML: </div>
+#+REVEAL_HTML: <div style="text-align: center; font-size:90%">
+$w' = w - \alpha \cdot \frac {\partial f}{\partial w}$
+#+REVEAL_HTML: </div><hr><div style="width: 100%; height: 350px; overflow: hidden;"> <div style="width: 450px; float: left"><img src="./pics/gradient2.png" style="width: 450px; height: 300px"></div>
+#+REVEAL_HTML: <div style="margin-left: 450px;"><img src="./pics/loss_surface3.gif" style="width: 500px; height: 350px"></div></div><hr>
+#+REVEAL_HTML: <cite style="font-size: 50%"> <a> http://citadel.sjfc.edu/faculty/kgreen/vector/Block2/pder/node8.html </a>, <a>https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif </a></cite>
 
-| [[./pics/gradient2.png]] | [[./pics/loss_surface2.png]] |
+#+begin_notes
+#+REVEAL_HTML: <cite style="font-size: 50%">
+http://citadel.sjfc.edu/faculty/kgreen/vector/Block2/pder/node8.html,
+https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif
+
+https://www.science.org/content/article/ai-researchers-allege-machine-learning-alchemy
+#+REVEAL_HTML: </cite>
+#+end_notes
 
 * Automatic Differentiation
 
 #+REVEAL_HTML: <div style="text-align: center">  
 $nn = l_L \circ ... \circ l_1$ 
 
-=> Ableitung ist: $Dnn = Dl_L \circ ... \circ Dl_1$
+$\Rightarrow$ Ableitung ist: $Dnn = Dl_L \circ ... \circ Dl_1$
 #+REVEAL_HTML: </div>
 
 - Funktionskomposition ist assoziativ, d.h. wir können in bliebiger Reihenfolge
   auswerten
 
-- Aufwand vorwärts (rechts-assoziativ) abhängig von Eingangsdimension (= Anzahl der
-  Parameter), rückwärts (links-assoziativ) abhängig von Ausgangsdimension (= 1)
+- Aufwand "vorwärts" abhängig von Eingangsdimension (hier: Anzahl der
+  Parameter, heute bis $10^{12}$)
+
+- Aufwand "rückwärts" abhängig von Ausgangsdimension (hier: 1)
 
 * Reverse Automatic Differentiation
 
-$Dnn = Dl_L(l_{L-1}(...)) \circ ... \circ Dl_1(v)$
+$Dnn(v) = Dl_L(l_{L-1}(...)) \circ ... \circ Dl_1(v)$
 
 Um $Dl_i$ zu berechnen, müssen wir die Ausgabe von $l_{i - 1}$ kennen
   
-  => "Wengert-Liste"
+  $\Rightarrow$ "Wengert-Liste"
 
 Deep Learning Bibliotheken sind im Wesentlichen Werkzeuge zur Generierung und 
 Verwaltung von Berechnungsgraphen.
 
-* Deep Learning mit TensorFlow
+* TensorFlow Graphen
 
 #+REVEAL_HTML: <div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
 [[./pics/tf_graph.png]]
 [[./pics/tensorboard-01.png]]
 #+REVEAL_HTML: </div>
 
-* Deep Learning mit TensorFlow
+* Implementierung in TensorFlow
 
 #+REVEAL_HTML: <div style="font-size: 70%;">
 #+begin_src python
 
-class SimpleNeuralNetwork:
+class SimpleNN:
 
-    def __init__(self, dim):
-        self.dims = [dim, dim, dim // 2, dim // 2, dim]
+    def __init__(self, dimIn dimOut):
+        self.dims = [dimIn, dimIn, dimIn, dimOut, dimOut]
         self.weights = [] 
         self.biases = []
         for i in range(4):
@@ -146,22 +155,32 @@ class SimpleNeuralNetwork:
 #+end_src
 #+REVEAL_HTML: </div>
 
-* Deep Learning mit ConCat
+#+begin_notes
+- Graphencode
+- Typen spezialisiert
+- lässt sich nicht Generalisieren...
+- ... testen
+- Pythonintegration
+- dimensionsfehler
+#+end_notes
 
-#+REVEAL_HTML: <div style="overflow-x: hidden; overflow-y: auto; height: 450px; font-size: 100%">
+* Neuronale Netze mit ConCat
+
+#+REVEAL_HTML: <div style="overflow-x: hidden; overflow-y: auto; height: 450px; font-size: 90%">
 #+begin_src haskell
 
-simpleNeuralNetwork ::
-  ( KnownNat n, 
-    KnownNat m, 
-    Additive numType, 
-    Floating numType, 
-    Ord numType
+simpleNN ::
+  ( KnownNat m,
+    KnownNat n,
+    Functor f,
+    Foldable f, 
+    Floating num,
+    ...
   ) =>
-  SimpleNeuralNetworkPars f n m numType -> 
-  f n numType -> 
-  f n numType
-simpleNeuralNetwork = 
+  SimpleNNParameters f m n num -> 
+  f m num -> 
+  f n num
+simpleNN = 
   affine 
   @. affTanh 
   @. affRelu 
@@ -182,11 +201,11 @@ bump a = a :*: Par1 1
 
 type a --+ b = Bump a --* b
 
-type SimpleNeuralNetworkPars (f :: Nat -> * -> *) n m =
-  ( (f m --+ f n)
+type SimpleNNParameters (f :: Nat -> * -> *) m n =
+  ( (f n --+ f n)
+      :*: (f m --+ f n)
       :*: (f m --+ f m)
-      :*: (f n --+ f m)
-      :*: (f n --+ f n)
+      :*: (f m --+ f m)
   )
 
 (<.>) :: (Foldable a, Zip a, Additive s, Num s) 
@@ -214,15 +233,24 @@ affRelu l = relus . affine l
 #+end_src
 #+REVEAL_HTML: </div>
 
-* ConCat
+#+begin_notes
+- pure Funktion
+- exakte Rep eines NNs
+- generische Typen
+- Dimensionalität
+- testen
+#+end_notes
 
-[[./pics/concat.png]]
+* ConCat Funktionsweise
+
+#+REVEAL_HTML: <img src="./pics/concat-pipeline.png" style="width: 90%">
 
 - Nutzt Isomorphie zwischen Lambda-Kalkülen und kartesisch abgeschlossenen Kategorien (CCC)
 - Übersetzt Haskell-Core in kategorielle Sprache
-- Abstrahiert Haskells Funktionspfeil (->)
+- Ausdrücke in kategorieller Sprache können in beliebigen CCCs interpretiert werden
+- Abstrahiert dadurch Haskells Funktionspfeil {{{inline-hs((->))}}}
 
-* ConCat
+* Beispiel einer Transformation
 
 #+begin_src haskell
 
@@ -230,15 +258,17 @@ magSqr :: Num a => (a, a) -> a
 magSqr (a, b) = sqr a + sqr b
 #+end_src
 
-=> ConCat:
+$\Rightarrow$ ConCat:
 
 $magSqr = addC \circ (mulC \circ (exl \triangle exl) \triangle mulC \circ (exr \triangle exr))$
 
-In Kategorie der Graphen ((a, a) `Graph` a):
-#+ATTR_HTML: :height 300
-[[./pics/magSqr.png]]
+In Kategorie der Graphen - src_haskell[:exports code]{(a, a) `Graph` a}:
+#+REVEAL_HTML: <div style="text-align: center"><img src="./pics/magSqr.png" height="250px%"><cite style="font-size:50%">
+https://arxiv.org/abs/1804.00746
+#+REVEAL_HTML: </cite></div>
 
-* Ableiten mit ConCat
+
+* Generalized Derivatives
 
 Idee: ergänze Funktionen um ihre Ableitung
 
@@ -246,13 +276,13 @@ Idee: ergänze Funktionen um ihre Ableitung
 $a \mapsto f(a) \Rightarrow a \mapsto (f(a), f'(a))$
 #+REVEAL_HTML: </div>
 
-Kategorie der Generalisierten Ableitungen (Generalized Derivatives):
+Kategorie der Generalisierten Ableitungen:
 #+begin_src haskell
 
 newtype GD k a b = D {unD :: a -> b :* (a `k` b)}  
 #+end_src
 
-* Ableiten mit ConCat
+* Komposition für Generalized Derivatives
 
 #+REVEAL_HTML: <div style="text-align: center;">
 $a \mapsto (f(a), f'(a))$
@@ -263,50 +293,63 @@ instance Category k => Category (GD k) where
   ...
   D g . D f = 
     D (\ a -> 
-          let (b, f') = f a  -- Kettenregel:
-              (c, g') = g b  -- (g o f)'(x) = g'(f(x)) o f'(x)
+          let (b, f') = f a
+              (c, g') = g b
            in (c, g' . f')
       )
 #+end_src
 
-* Ableiten mit ConCat
+#+REVEAL_HTML: <div style="text-align: center; margin-top: 50px">
+Kettenregel: $(g \circ f)'(x) = g'(f(x)) \circ f'(x)$
+#+REVEAL_HTML: </div>
+
+* Multiplikation für Generalized Derivatives
 
 #+REVEAL_HTML: <div style="text-align: center;">
 $a \mapsto (f(a), f'(a))$
 #+REVEAL_HTML: </div>
 
 #+begin_src haskell
-instance {-# overlappable #-} 
-(LinearCat k s, Additive s, Num s) => NumCat (GD k) s where  
+instance (LinearCat k s, Additive s, Num s) => NumCat (GD k) s where  
   ...
-  -- Produktregel: (f(x) * g(x))' = f'(x)*g(x) + f(x)*g'(x)
   mulC    = D (mulC &&& \ (u,v) -> scale v |||| scale u)
 #+end_src
 
-* Forward Automatic Differentiation mit ConCat
+#+REVEAL_HTML: <div style="text-align: center; margin-top: 50px">
+Produktregel: $(f(x) \cdot g(x))' = f'(x) \cdot g(x) + f(x) \cdot g'(x)$
+#+REVEAL_HTML: </div>
 
-#+CAPTION: magSqr in $GD (-+>)$
+* Forward Automatic Differentiation
+
+#+REVEAL_HTML: <div style="text-align: center">
+#+CAPTION: =magSqr in GD (-+>)=
 [[./pics/magSqr_D.png]]
+#+REVEAL_HTML: <cite style="font-size: 50%">
+https://arxiv.org/abs/1804.00746
+#+REVEAL_HTML: </cite></div>
 
-* Reverse Automatic Differentiation mit ConCat
+* Duale Kategorien
 
-Duale Kategorie ("drehe Pfeile um")
+Im Dual einer Kategorie drehen sich alle Pfeile um
 
 #+REVEAL_HTML: <div style="text-align: center">
 $a \rightarrow b \Rightarrow b \rightarrow a$
 #+REVEAL_HTML: </div>
 
+In Haskell:
 #+begin_src haskell
 newtype Dual k a b = Dual (b `k` a)
 #+end_src
 
 
-* Reverse Automatic Differentiation mit ConCat
+* Beispiele Dualer Morphismen
 
 #+begin_src haskell
 
+
 instance Category k => Category (Dual k) where
   ...
+  -- flip :: (a -> b -> c) -> b -> a -> c
   (.) = inAbst2 (flip (.))
 
 instance CoproductPCat k => ProductCat (Dual k) where
@@ -315,13 +358,17 @@ instance CoproductPCat k => ProductCat (Dual k) where
   exl = abst inlP
 #+end_src
 
-* Reverse Automatic Differentiation mit ConCat
+* Reverse Automatic Differentiation
 
+#+REVEAL_HTML: <div style="text-align: center">
 #+ATTR_HTML: :width 500
-#+CAPTION: magSqr in $GD (Dual(-+>))$
+#+CAPTION: =magSqr in GD (Dual(-+>))=
 [[./pics/magSqr_dual.png]]
+#+REVEAL_HTML: <cite style="font-size: 50%">
+https://arxiv.org/abs/1804.00746
+#+REVEAL_HTML: </cite></div>
 
-* Reverse Automatic Differentiation mit ConCat
+* Graphenfreie Gradienten
 
 #+begin_src haskell
 type RAD = GD (Dual (-+>))
@@ -329,7 +376,7 @@ type RAD = GD (Dual (-+>))
 grad :: Num s => (a -> s) -> (a -> a)
 grad = friemelOutGrad . toCcc @RAD
 
-nnGrad :: paramType -> paramType
+nnGrad :: parameters -> parameters
 nnGrad = grad (loss . nn)
 #+end_src
 
@@ -353,29 +400,36 @@ newtype AccFun a b where
 - Plugin erzeugt den acclerate AST
 #+end_notes
 
-* Beschleunigtes Deep Learning in Haskell
+* ConCelerate: ConCat + Accelerate
 
-#+REVEAL_HTML: <div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 79%">
+#+REVEAL_HTML: <div>
 #+begin_src haskell
-autoencoder ::
-  forall m n.
-  (KnownNat m, KnownNat n) => Autoencoder m n Double
-autoencoder =
-  affine @(Vector n) @. affTanh @(Vector n) @. affRelu @(Vector m) @. affTanh
+simpleNN :: (SimpleNNConstraints f m n num) => SimpleNN f m n num
+simpleNN = affine @. affTanh @. affRelu @. affTanh
 
-autoencoderGrad ::
-  forall m n.
-  ( KnownNat m, KnownNat n) =>
-  (Vector m Double, Vector m Double) ->
-  AutoencoderPars m n Double ->
-  AutoencoderPars m n Double
-autoencoderGrad = errGrad autoencoder
+simpleNNGrad ::
+  (KnownNat m, KnownNat n) =>
+  (Vector m Double, Vector n Double) ->
+  SimpleNNParameters m n Double ->
+  SimpleNNParameters m n Double
+simpleNNGrad = errGrad simpleNN
 
-autoencoderGradAccFun ::
-  forall m n.
-  ( KnownNat m, KnownNat n) =>
-  (Vector m Double, Vector m Double) ->
-  AutoencoderPars m n Double `AccFun` AutoencoderPars m n Double
-autoencoderGradAccFun pair = AltCat.toCcc' (autoencoderGrad pair)
+simpleNNGradAccFun ::
+  (KnownNat m, KnownNat n) =>
+  (Vector m Double, Vector n Double) ->
+  SimpleNNParameters m n Double `AccFun` SimpleNNParameters m n Double
+simpleNNGradAccFun pair = toCcc (simpleNNGrad pair)
 #+end_src
 #+REVEAL_HTML: </div>
+
+* Vielen Dank!
+
+#+REVEAL_HTML: <div style="width: 50%; overflow: hidden; margin-left: 100px"> <div style="width: 100px; float: left">
+[[./pics/concat_qr.png]]
+#+REVEAL_HTML: </div><div style="margin-left: 150px; padding: 65px"> ConCat </div><hr>
+#+REVEAL_HTML: <div style="width: 100px; float: left">
+[[./pics/accelerate_qr.png]]
+#+REVEAL_HTML: </div><div style="margin-left: 150px; padding: 65px"> Accelerate </div><hr>
+#+REVEAL_HTML: <div style="width: 100px; float: left">
+[[./pics/ag_qr.png]]
+#+REVEAL_HTML: </div><div style="margin-left: 150px; padding: 65px"> Active Group </div></div>
