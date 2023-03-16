@@ -14,9 +14,19 @@
 Elliot and Ed Kmett have done several years ago./"
 #+REVEAL_HTML: </p><figcaption style="font-size: 80%"> - Simon Peyton Jones </figcaption></div><img src="./pics/compiling_to_categories.png" style="height: 400px">
 
+#+begin_notes
+
+#+end_notes
+
 * Siemens Anomaly App
 
 #+REVEAL_HTML: <img style="border: 1px solid black" src="./pics/sap_small.png"> 
+
+#+begin_notes
+1:20 - 3:00
+
+
+#+end_notes
 
 * Neuronale Netze sind doch nur Funktionen
 
@@ -41,29 +51,35 @@ $\Rightarrow$ Komposition purer Funktionen
 
 
 #+begin_notes
+3:00 - 6:30
+
 - Gibt auch andere layers
 #+end_notes
 
-* Deep Learning Community: Hold my beer
+* Deep learning community: hold my beer
 
 #+REVEAL_HTML: <p>
-"... layers (die im modernen maschinellen Lernen als *zustandsbehaftete* Funktionen 
+"[...] layers (die im modernen maschinellen Lernen als *zustandsbehaftete* Funktionen 
 mit *impliziten Parametern* verstanden werden sollten) werden typischerweise als 
 *Python-Klassen* dargestellt, deren Konstruktoren ihre Parameter *erzeugen und 
-initialisieren*..."
+initialisieren* [...]"
 #+REVEAL_HTML: </p>
 
-#+REVEAL_HTML: <cite style="font-size: 50%">
+#+REVEAL_HTML: <div style="font-size: 35%">
 Übersetzt aus:
-https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf
-#+REVEAL_HTML: </cite>
+#+REVEAL_HTML: <a href="https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf"> Paszke, Adam, et al. "Pytorch: An imperative style, high-performance deep learning library." Advances in neural information processing systems 32 (2019)</a> </div>
 
-* Training
+#+begin_notes
+6:30 - 8:40
 
-- Finde Parameter, für die das NN auf einem gegebenen Trainingsdatensatz
+#+end_notes
+
+* Trainingsalgorithmus
+
+- Finde Parameter, für die das NN auf gegebenem Trainingsdatensatz
   möglichst gute Ergebnisse liefert
 
-- Was gut ist, wird von einer skalarwertigen Fehlerfunktion beurteilt
+- Güte durch skalarwertige Fehlerfunktion beurteilt
 
  $\Rightarrow$ Löse Optimierungsproblem:
  
@@ -71,21 +87,23 @@ https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-
  $\textrm{argmin}_{\omega \in \Omega} (\textrm{loss} \circ \textrm{neuralNet} (\omega; \textrm{data}))$
  #+REVEAL_HTML: </div>
 
+#+begin_notes
+8:40 - 9:50
+
+
+#+end_notes
+
 * Gradient Descent
 
 #+REVEAL_HTML: <div style="text-align: center; font-size:90%">
-$w' = w - \alpha \cdot \frac {\partial f}{\partial w}$
+$w_{n+1} = w_n - \alpha \cdot \frac {\partial f}{\partial w}$
 #+REVEAL_HTML: </div><hr><div style="width: 100%; height: 350px; overflow: hidden;"> <div style="width: 450px; float: left"><img src="./pics/gradient2.png" style="width: 450px; height: 300px"></div>
 #+REVEAL_HTML: <div style="margin-left: 450px;"><img src="./pics/loss_surface3.gif" style="width: 500px; height: 350px"></div></div><hr>
-#+REVEAL_HTML: <cite style="font-size: 50%"> <a> http://citadel.sjfc.edu/faculty/kgreen/vector/Block2/pder/node8.html </a>, <a>https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif </a></cite>
+#+REVEAL_HTML: <div style="font-size: 35%"> Abbildungen von: <a> http://citadel.sjfc.edu/faculty/kgreen/vector/Block2/pder/node8.html </a>, <a>https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif </a></div>
 
 #+begin_notes
-#+REVEAL_HTML: <cite style="font-size: 50%">
-http://citadel.sjfc.edu/faculty/kgreen/vector/Block2/pder/node8.html,
-https://upload.wikimedia.org/wikipedia/commons/a/a3/Gradient_descent.gif
+9:50 - 12:00
 
-https://www.science.org/content/article/ai-researchers-allege-machine-learning-alchemy
-#+REVEAL_HTML: </cite>
 #+end_notes
 
 * Automatic Differentiation
@@ -93,16 +111,21 @@ https://www.science.org/content/article/ai-researchers-allege-machine-learning-a
 #+REVEAL_HTML: <div style="text-align: center">  
 $nn = l_L \circ ... \circ l_1$ 
 
-$\Rightarrow$ Ableitung ist: $Dnn = Dl_L \circ ... \circ Dl_1$
+$\Rightarrow$ Ableitung: $Dnn = Dl_L \circ ... \circ Dl_1$
 #+REVEAL_HTML: </div>
 
-- Funktionskomposition ist assoziativ, d.h. wir können in bliebiger Reihenfolge
-  auswerten
+- Funktionskomposition ist assoziativ, erlaubt Auswertung in beliebiger Reihenfolge
 
 - Aufwand "vorwärts" abhängig von Eingangsdimension (hier: Anzahl der
-  Parameter, heute bis $10^{12}$)
+  Parameter; heute bis $10^{11}$)
 
 - Aufwand "rückwärts" abhängig von Ausgangsdimension (hier: 1)
+
+#+begin_notes
+12:00 - 13:50
+
+
+#+end_notes
 
 * Reverse Automatic Differentiation
 
@@ -115,12 +138,22 @@ Um $Dl_i$ zu berechnen, müssen wir die Ausgabe von $l_{i - 1}$ kennen
 Deep Learning Bibliotheken sind im Wesentlichen Werkzeuge zur Generierung und 
 Verwaltung von Berechnungsgraphen.
 
+#+begin_notes
+13:50 - 15:15
+
+#+end_notes
+
 * TensorFlow Graphen
 
 #+REVEAL_HTML: <div style="overflow-x: hidden; overflow-y: auto; height: 500px; font-size: 50%">
 [[./pics/tf_graph.png]]
 [[./pics/tensorboard-01.png]]
 #+REVEAL_HTML: </div>
+
+#+begin_notes
+15:15 - 17:00
+
+#+end_notes
 
 * Implementierung in TensorFlow
 
@@ -156,6 +189,8 @@ class SimpleNN:
 #+REVEAL_HTML: </div>
 
 #+begin_notes
+17:00 - 20:30
+
 - Graphencode
 - Typen spezialisiert
 - lässt sich nicht Generalisieren...
@@ -234,6 +269,8 @@ affRelu l = relus . affine l
 #+REVEAL_HTML: </div>
 
 #+begin_notes
+20:30 - 22:00
+
 - pure Funktion
 - exakte Rep eines NNs
 - generische Typen
@@ -245,12 +282,20 @@ affRelu l = relus . affine l
 
 #+REVEAL_HTML: <img src="./pics/concat-pipeline.png" style="width: 90%">
 
-- Nutzt Isomorphie zwischen Lambda-Kalkülen und kartesisch abgeschlossenen Kategorien (CCC)
+- Nutzt Isomorphie zwischen Lambda-Kalkülen und kartesisch abgeschlossenen Kategorien (CCC) [*]
 - Übersetzt Haskell-Core in kategorielle Sprache
 - Ausdrücke in kategorieller Sprache können in beliebigen CCCs interpretiert werden
 - Abstrahiert dadurch Haskells Funktionspfeil {{{inline-hs((->))}}}
 
-* Beispiel einer Transformation
+#+REVEAL_HTML: <div style="font-size: 35%; padding: 100px"> [*]  <a href="https://dl.acm.org/doi/10.5555/645691.665261"> Joachim Lambek "Cartesian Closed Categories and Typed Lambda-calculi", In 13th Spring School on Combinators and Functional Programming Languages, 1985 </a></div>
+
+#+begin_notes
+22:00 - 22:40
+
+
+#+end_notes
+
+* Beispiel einer ConCat-Transformation
 
 #+begin_src haskell
 
@@ -262,25 +307,35 @@ $\Rightarrow$ ConCat:
 
 $magSqr = addC \circ (mulC \circ (exl \triangle exl) \triangle mulC \circ (exr \triangle exr))$
 
-In Kategorie der Graphen - src_haskell[:exports code]{(a, a) `Graph` a}:
-#+REVEAL_HTML: <div style="text-align: center"><img src="./pics/magSqr.png" height="250px%"><cite style="font-size:50%">
-https://arxiv.org/abs/1804.00746
-#+REVEAL_HTML: </cite></div>
+In Kategorie der Graphen -- src_haskell[:exports code]{(a, a) `Graph` a}:
+#+REVEAL_HTML: <div style="text-align: center"><img src="./pics/magSqr.png" height="250px%"><div style="font-size:35%"> Grafik von:
+#+REVEAL_HTML: <a href="https://arxiv.org/abs/1804.00746">Conal Elliot "The Simple Essence of Automatic Differentiation", ICFP 2018 </a></div></div>
 
+#+begin_notes
+22:40 - 25:20
+
+
+#+end_notes
 
 * Generalized Derivatives
 
-Idee: ergänze Funktionen um ihre Ableitung
+Idee: Ergänze Funktion um ihre Ableitung
 
 #+REVEAL_HTML: <div style="text-align: center;">
 $a \mapsto f(a) \Rightarrow a \mapsto (f(a), f'(a))$
 #+REVEAL_HTML: </div>
 
-Kategorie der Generalisierten Ableitungen:
+Kategorie der generalisierten Ableitungen:
 #+begin_src haskell
 
 newtype GD k a b = D {unD :: a -> b :* (a `k` b)}  
 #+end_src
+
+#+begin_notes
+25:20 - 26:30
+
+
+#+end_notes
 
 * Komposition für Generalized Derivatives
 
@@ -303,6 +358,12 @@ instance Category k => Category (GD k) where
 Kettenregel: $(g \circ f)'(x) = g'(f(x)) \circ f'(x)$
 #+REVEAL_HTML: </div>
 
+#+begin_notes
+26:30 - 27:20
+
+
+#+end_notes
+
 * Multiplikation für Generalized Derivatives
 
 #+REVEAL_HTML: <div style="text-align: center;">
@@ -319,14 +380,21 @@ instance (LinearCat k s, Additive s, Num s) => NumCat (GD k) s where
 Produktregel: $(f(x) \cdot g(x))' = f'(x) \cdot g(x) + f(x) \cdot g'(x)$
 #+REVEAL_HTML: </div>
 
+#+begin_notes
+27:20 - 28:00
+
+#+end_notes
+
 * Forward Automatic Differentiation
 
 #+REVEAL_HTML: <div style="text-align: center">
 #+CAPTION: =magSqr in GD (-+>)=
 [[./pics/magSqr_D.png]]
-#+REVEAL_HTML: <cite style="font-size: 50%">
-https://arxiv.org/abs/1804.00746
-#+REVEAL_HTML: </cite></div>
+
+#+begin_notes
+28:00 - 29:15
+
+#+end_notes
 
 * Duale Kategorien
 
@@ -341,6 +409,10 @@ In Haskell:
 newtype Dual k a b = Dual (b `k` a)
 #+end_src
 
+#+begin_notes
+29:15 - 30:00
+
+#+end_notes
 
 * Beispiele Dualer Morphismen
 
@@ -358,15 +430,22 @@ instance CoproductPCat k => ProductCat (Dual k) where
   exl = abst inlP
 #+end_src
 
+#+begin_notes
+30:00 - 31:00
+
+#+end_notes
+
 * Reverse Automatic Differentiation
 
 #+REVEAL_HTML: <div style="text-align: center">
 #+ATTR_HTML: :width 500
 #+CAPTION: =magSqr in GD (Dual(-+>))=
 [[./pics/magSqr_dual.png]]
-#+REVEAL_HTML: <cite style="font-size: 50%">
-https://arxiv.org/abs/1804.00746
-#+REVEAL_HTML: </cite></div>
+
+#+begin_notes
+31:00 - 31:20
+
+#+end_notes
 
 * Graphenfreie Gradienten
 
@@ -380,11 +459,18 @@ nnGrad :: parameters -> parameters
 nnGrad = grad (loss . nn)
 #+end_src
 
+#+begin_notes
+31:20 - 34:30
+
+#+end_notes
+
 * Beschleunigtes Deep Learning in Haskell
 
+#+REVEAL_HTML: <blockquote>
 "Data.Array.Accelerate defines an embedded array language for computations for 
-high-performance computing in Haskell. ... These computations may then be online 
+high-performance computing in Haskell. [...] These computations may then be online 
 compiled and executed on a range of architectures."
+#+REVEAL_HTML: </blockquote>
 
 Kategorie der Accelerate-Funktionen:
 #+begin_src haskell
@@ -393,6 +479,8 @@ newtype AccFun a b where
 #+end_src
 
 #+begin_notes
+34:30 - 35:30
+
 (- native Haskell accelerate:-> AST)
 - schreiben Berechnung als Haskell-Code, daraus entsteht accelerate AST
 - accelerate AST wird zur Laufzeit von LLVM kompiliert
@@ -421,6 +509,11 @@ simpleNNGradAccFun ::
 simpleNNGradAccFun pair = toCcc (simpleNNGrad pair)
 #+end_src
 #+REVEAL_HTML: </div>
+
+#+begin_notes
+35:30
+
+#+end_notes
 
 * Vielen Dank!
 
